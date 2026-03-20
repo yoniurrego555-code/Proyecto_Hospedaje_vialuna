@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Vialuna</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<div class="login-container">
+    <h2>🏨 Vialuna</h2>
+    <p>Iniciar sesión</p>
+
+    <form id="loginForm">
+        <input type="text" id="usuario" placeholder="Usuario" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+
+        <button type="submit">Ingresar</button>
+    </form>
+
+    <p id="error" class="error"></p>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const login = document.getElementById("usuario").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch("/api/usuarios/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ login, password })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+        localStorage.setItem("usuario", JSON.stringify(data));
+        window.location.href = "/dashboard.html";
+    } else {
+        document.getElementById("error").innerText = "Credenciales incorrectas";
+    }
+});
+</script>
+
+</body>
+</html>
