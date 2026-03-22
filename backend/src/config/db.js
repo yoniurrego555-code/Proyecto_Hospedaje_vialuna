@@ -2,11 +2,11 @@
 const mysql = require("mysql2/promise");
 
 const pool = mysql.createPool({
-    host: "127.0.0.1",
+    host: "localhost",        // ✅ mejor usar localhost
     user: "root",
-    password: "",
+    password: "Yoniurrego200421@",  // 🔐 la que pusiste al instalar
     database: "hospedaje",
-    port: 3307,
+    port: 3307,               // ✅ puerto por defecto
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

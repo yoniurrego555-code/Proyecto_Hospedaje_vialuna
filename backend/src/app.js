@@ -17,17 +17,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ======================
-// 🌐 FRONTEND (PUBLIC)
-// ======================
-app.use(express.static(path.join(__dirname, "../public")));
-
-// ======================
-// 🏠 RUTA PRINCIPAL (LOGIN)
-// ======================
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../public/login.html"));
-});
 
 // ======================
 // 🔗 RUTAS API
