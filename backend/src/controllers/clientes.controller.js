@@ -1,4 +1,4 @@
-const service = require("../services/detallereservaservicio.service");
+const service = require("../services/clientes.service");
 
 exports.listar = async (req, res) => {
     const data = await service.listar();
