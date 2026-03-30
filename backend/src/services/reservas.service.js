@@ -1,7 +1,27 @@
 const model = require("../models/reservas.model");
 
-exports.listar = async () => await model.obtener();
-exports.obtener = async (id) => await model.obtenerPorId(id);
-exports.crear = async (data) => await model.crear(data);
-exports.actualizar = async (id, data) => await model.actualizar(id, data);
-exports.eliminar = async (id) => await model.eliminar(id);
+// 🔹 Listar
+exports.listar = () => {
+  return model.obtener();
+};
+
+// 🔹 Obtener por ID
+exports.obtener = (id) => {
+  return model.obtenerPorId(id);
+};
+
+// 🔹 Crear
+exports.crear = (data) => {
+  console.log("SERVICE RECIBE:", data); // 👈 DEBUG
+  return model.crear(data);
+};
+
+// 🔹 Actualizar
+exports.actualizar = (id, data) => {
+  return model.actualizar(id, data);
+};
+
+// 🔹 Eliminar
+exports.eliminar = (id) => {
+  return model.eliminar(id);
+};

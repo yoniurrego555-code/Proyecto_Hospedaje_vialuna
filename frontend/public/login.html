@@ -1,53 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Vialuna</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
-<body>
 
-<div class="overlay"></div>
+<body class="login-body">
 
-<div class="login-container">
-    <h2>🏨 Vialuna</h2>
-    <p>Iniciar sesión</p>
+  <div class="login-container">
+    <h2>Iniciar Sesión 🏨</h2>
 
     <form id="loginForm">
-        <input type="text" id="usuario" placeholder="Usuario" required>
-        <input type="password" id="password" placeholder="Contraseña" required>
 
-        <button type="submit">Ingresar</button>
+      <input 
+        type="email" 
+        id="email" 
+        placeholder="Correo" 
+        required
+      >
+
+      <!-- (Opcional por ahora, no validamos password aún) -->
+      <input 
+        type="password" 
+        id="password" 
+        placeholder="Contraseña"
+      >
+
+      <button type="submit">Ingresar</button>
+
+      <!-- Botón registro -->
+      <button type="button" onclick="irRegistro()" class="secondary-btn">
+        Registrarse
+      </button>
+
     </form>
+  </div>
 
-    <p id="error" class="error"></p>
-</div>
-
-<script>
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const login = document.getElementById("usuario").value;
-    const password = document.getElementById("password").value;
-
-    const res = await fetch("/api/usuarios/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ login, password })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-        localStorage.setItem("usuario", JSON.stringify(data));
-        window.location.href = "/dashboard.html";
-    } else {
-        document.getElementById("error").innerText = "Credenciales incorrectas";
-    }
-});
-</script>
+  <script type="module" src="../js/auth.js"></script>
 
 </body>
 </html>

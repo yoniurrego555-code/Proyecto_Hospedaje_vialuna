@@ -35,8 +35,8 @@ async function update(id, cliente) {
 
     const [result] = await db.query(
         `UPDATE clientes 
-         SET Nombre=?, Apellido=?, Direccion=?, Email=?, Telefono=?, Estado=?, IDRol=? 
-         WHERE NroDocumento=?`,
+        SET Nombre=?, Apellido=?, Direccion=?, Email=?, Telefono=?, Estado=?, IDRol=? 
+        WHERE NroDocumento=?`,
         [Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol, id]
     );
 

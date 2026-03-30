@@ -1,0 +1,172 @@
+/* =========================
+🌍 ESTILO GLOBAL
+========================= */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+}
+
+/* =========================
+🔥 LOGIN (FONDO DBZ)
+========================= */
+.login-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  background-image: url('https://wallpapers.com/images/hd/cool-dragon-ball-z-ax3xiggcbo3lre3c.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  position: relative;
+}
+
+/* Capa oscura */
+.login-body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 0;
+}
+
+/* Contenedor login */
+.login-container {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px 35px;
+  border-radius: 20px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  animation: fadeIn 0.8s ease;
+}
+
+/* Título */
+.login-container h2 {
+  margin-bottom: 25px;
+  color: #1e3c72;
+  font-size: 28px;
+}
+
+/* Inputs */
+.login-container input {
+  width: 100%;
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.login-container input:focus {
+  border-color: #ff6a00;
+  box-shadow: 0 0 8px rgba(255, 106, 0, 0.5);
+  outline: none;
+}
+
+/* Botón principal */
+.login-container button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  background: linear-gradient(45deg, #ff6a00, #ff8c00);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-container button:hover {
+  background: linear-gradient(45deg, #ff8c00, #e65c00);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+}
+
+/* Botón secundario */
+.secondary-btn {
+  margin-top: 10px;
+  background: #1e3c72 !important;
+}
+
+.secondary-btn:hover {
+  background: #16325a !important;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+  🏨 DASHBOARD
+========================= */
+.dashboard-body {
+  background: #f4f6f9;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Contenedor tarjetas */
+#habitaciones {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Tarjetas de habitaciones */
+.card {
+  background: white;
+  padding: 25px;
+  width: 200px;
+  border-radius: 15px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* Botones generales */
+button {
+  cursor: pointer;
+}
+
+/* Botón cerrar sesión */
+#logoutBtn {
+  padding: 10px 15px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+#logoutBtn:hover {
+  background: darkred;
+}

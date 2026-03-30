@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reserva</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body class="login-body">
+
+  <div class="login-container">
+    <h2>Reservar Habitación 🏨</h2>
+
+    <form id="reservaForm">
+
+      <input type="text" id="documento" placeholder="Número de documento" required>
+
+      <label>Fecha de reserva</label>
+      <input type="date" id="fechaReserva" readonly>
+
+      <label>Fecha inicio</label>
+      <input type="date" id="fechaInicio" required>
+
+      <label>Fecha fin</label>
+      <input type="date" id="fechaFin" required>
+
+      <label>Estado</label>
+      <input type="text" value="Pendiente" readonly>
+
+      <label>Método de pago</label>
+      <select id="metodoPago" required>
+        <option value="">Seleccione</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Tarjeta">Tarjeta</option>
+        <option value="Transferencia">Transferencia</option>
+      </select>
+
+      <button type="submit">Confirmar Reserva</button>
+
+    </form>
+  </div>
+
+  <!-- 🔥 IMPORTANTE -->
+  <script type="module" src="../js/reservas.js"></script>
+
+</body>
+</html>

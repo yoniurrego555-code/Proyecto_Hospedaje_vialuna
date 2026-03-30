@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Hospedaje</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body class="dashboard-body">
+
+  <!-- 🔷 HEADER -->
+  <header style="padding:20px; background:#1e3c72; color:white;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2>🏨 Hospedaje</h2>
+
+      <div>
+        <!-- 🔥 BOTÓN LOGIN -->
+        <a href="public/login.html">
+          <button>Iniciar Sesión</button>
+        </a>
+
+        <!-- 🔥 BOTÓN LOGOUT -->
+        <button id="logoutBtn">Cerrar Sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 🔷 TÍTULO -->
+  <h1 style="text-align:center; margin-top:20px;">
+    Habitaciones Disponibles
+  </h1>
+
+  <!-- 🔷 CONTENEDOR -->
+  <div id="habitaciones" style="padding:20px;"></div>
+
+  <!-- 🔷 JS -->
+  <script type="module" src="./js/app.js"></script>
+
+</body>
+</html>
