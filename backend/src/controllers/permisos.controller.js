@@ -1,79 +1,54 @@
 const service = require("../services/permisos.service");
 
 // 🔹 LISTAR
-exports.listar = async (req, res) => {
-    try {
-        const data = await service.listar();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al listar permisos",
-            error: error.message
-        });
-    }
+exports.listar = (req, res) => {
+  service.listar()
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error("❌ ERROR:", err);
+      res.status(500).json({ error: "Error al listar" });
+    });
 };
 
 // 🔹 OBTENER
-exports.obtener = async (req, res) => {
-    try {
-        const data = await service.obtener(req.params.id);
-
-        if (!data) {
-            return res.status(404).json({
-                mensaje: "Permiso no encontrado"
-            });
-        }
-
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener permiso",
-            error: error.message
-        });
-    }
+exports.obtener = (req, res) => {
+  service.obtener(req.params.id)
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al obtener" });
+    });
 };
 
 // 🔹 CREAR
-exports.crear = async (req, res) => {
-    try {
-        await service.crear(req.body);
-        res.json({
-            mensaje: "Permiso creado correctamente"
-        });
-    } catch (error) {
-        res.status(400).json({
-            mensaje: "Error al crear permiso",
-            error: error.message
-        });
-    }
+exports.crear = (req, res) => {
+  service.crear(req.body)
+    .then(result => res.json({
+      mensaje: "Creado correctamente",
+      resultado: result
+    }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al crear" });
+    });
 };
 
 // 🔹 ACTUALIZAR
-exports.actualizar = async (req, res) => {
-    try {
-        await service.actualizar(req.params.id, req.body);
-        res.json({
-            mensaje: "Permiso actualizado correctamente"
-        });
-    } catch (error) {
-        res.status(400).json({
-            mensaje: "Error al actualizar permiso",
-            error: error.message
-        });
-    }
+exports.actualizar = (req, res) => {
+  service.actualizar(req.params.id, req.body)
+    .then(() => res.json({ mensaje: "Actualizado" }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al actualizar" });
+    });
 };
 
 // 🔹 ELIMINAR
-exports.eliminar = async (req, res) => {
-    try {
-        await service.eliminar(req.params.id);
-        res.json({
-            mensaje: "Permiso eliminado correctamente"
-        });
-    } catch (error) {
-        res.status(400).json({
-            mensaje: "Error al eliminar permiso",
-            error: error.message
-        });
-    }
+exports.eliminar = (req, res) => {
+  service.eliminar(req.params.id)
+    .then(() => res.json({ mensaje: "Eliminado" }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al eliminar" });
+    });
 };

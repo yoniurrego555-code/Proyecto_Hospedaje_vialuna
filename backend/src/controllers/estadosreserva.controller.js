@@ -1,65 +1,54 @@
-// src/controllers/estadosreserva.controller.js
-const EstadosReserva = require('../models/estadosreserva.model');
+const service = require("../services/estadosreserva.service");
 
-const EstadosReservaController = {
-  getAll: async (req, res) => {
-    try {
-      const estados = await EstadosReserva.getAll();
-      res.json(estados);
-    } catch (err) {
-      res.status(500).json({ mensaje: 'Error al obtener estados', error: err.message });
-    }
-  },
-
-  getById: async (req, res) => {
-    try {
-      const id = req.params.id;
-      const estado = await EstadosReserva.getById(id);
-      if (!estado) {
-        return res.status(404).json({ mensaje: 'Estado no encontrado' });
-      }
-      res.json(estado);
-    } catch (err) {
-      res.status(500).json({ mensaje: 'Error al obtener estado', error: err.message });
-    }
-  },
-
-  create: async (req, res) => {
-    try {
-      const data = req.body;
-      const nuevoEstado = await EstadosReserva.create(data);
-      res.status(201).json(nuevoEstado);
-    } catch (err) {
-      res.status(500).json({ mensaje: 'Error al crear estado', error: err.message });
-    }
-  },
-
-  update: async (req, res) => {
-    try {
-      const id = req.params.id;
-      const data = req.body;
-      const affectedRows = await EstadosReserva.update(id, data);
-      if (affectedRows === 0) {
-        return res.status(404).json({ mensaje: 'Estado no encontrado' });
-      }
-      res.json({ mensaje: 'Estado actualizado correctamente' });
-    } catch (err) {
-      res.status(500).json({ mensaje: 'Error al actualizar estado', error: err.message });
-    }
-  },
-
-  delete: async (req, res) => {
-    try {
-      const id = req.params.id;
-      const affectedRows = await EstadosReserva.delete(id);
-      if (affectedRows === 0) {
-        return res.status(404).json({ mensaje: 'Estado no encontrado' });
-      }
-      res.json({ mensaje: 'Estado eliminado correctamente' });
-    } catch (err) {
-      res.status(500).json({ mensaje: 'Error al eliminar estado', error: err.message });
-    }
-  }
+// 🔹 LISTAR
+exports.listar = (req, res) => {
+  service.listar()
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error("❌ ERROR:", err);
+      res.status(500).json({ error: "Error al listar" });
+    });
 };
 
-module.exports = EstadosReservaController;
+// 🔹 OBTENER
+exports.obtener = (req, res) => {
+  service.obtener(req.params.id)
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al obtener" });
+    });
+};
+
+// 🔹 CREAR
+exports.crear = (req, res) => {
+  service.crear(req.body)
+    .then(result => res.json({
+      mensaje: "Creado correctamente",
+      resultado: result
+    }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al crear" });
+    });
+};
+
+// 🔹 ACTUALIZAR
+exports.actualizar = (req, res) => {
+  service.actualizar(req.params.id, req.body)
+    .then(() => res.json({ mensaje: "Actualizado" }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al actualizar" });
+    });
+};
+
+// 🔹 ELIMINAR
+exports.eliminar = (req, res) => {
+  service.eliminar(req.params.id)
+    .then(() => res.json({ mensaje: "Eliminado" }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al eliminar" });
+    });
+};

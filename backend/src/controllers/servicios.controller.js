@@ -1,37 +1,54 @@
 const service = require("../services/servicios.service");
 
-exports.listar = async (req, res) => {
-    try {
-        const data = await service.listar();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+// 🔹 LISTAR
+exports.listar = (req, res) => {
+  service.listar()
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error("❌ ERROR:", err);
+      res.status(500).json({ error: "Error al listar" });
+    });
 };
 
-exports.crear = async (req, res) => {
-    try {
-        await service.crear(req.body);
-        res.json({ mensaje: "Creado correctamente" });
-    } catch (error) {
-        res.status(400).json(error);
-    }
+// 🔹 OBTENER
+exports.obtener = (req, res) => {
+  service.obtener(req.params.id)
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al obtener" });
+    });
 };
 
-exports.actualizar = async (req, res) => {
-    try {
-        await service.actualizar(req.params.id, req.body);
-        res.json({ mensaje: "Actualizado correctamente" });
-    } catch (error) {
-        res.status(400).json(error);
-    }
+// 🔹 CREAR
+exports.crear = (req, res) => {
+  service.crear(req.body)
+    .then(result => res.json({
+      mensaje: "Creado correctamente",
+      resultado: result
+    }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al crear" });
+    });
 };
 
-exports.eliminar = async (req, res) => {
-    try {
-        await service.eliminar(req.params.id);
-        res.json({ mensaje: "Eliminado correctamente" });
-    } catch (error) {
-        res.status(500).json(error);
-    }
+// 🔹 ACTUALIZAR
+exports.actualizar = (req, res) => {
+  service.actualizar(req.params.id, req.body)
+    .then(() => res.json({ mensaje: "Actualizado" }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al actualizar" });
+    });
+};
+
+// 🔹 ELIMINAR
+exports.eliminar = (req, res) => {
+  service.eliminar(req.params.id)
+    .then(() => res.json({ mensaje: "Eliminado" }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al eliminar" });
+    });
 };

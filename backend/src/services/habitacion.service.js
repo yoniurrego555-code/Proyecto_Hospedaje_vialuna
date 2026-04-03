@@ -1,4 +1,4 @@
-const model = require("../models/roles.model");
+const model = require("../models/habitacion.model");
 
 // 🔹 LISTAR
 exports.listar = () => model.obtener();

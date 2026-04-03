@@ -1,40 +1,35 @@
 const db = require("../config/db");
 
-const obtener = async () => {
-    const [rows] = await db.query("SELECT * FROM rolespermisos");
-    return rows;
+// 🔹 Obtener todos
+const obtener = () => {
+  return db.query("SELECT * FROM rolespermisos")
+    .then(([rows]) => rows);
 };
 
-const obtenerPorId = async (id) => {
-    const [rows] = await db.query(
-        "SELECT * FROM rolespermisos WHERE ID = ?",
-        [id]
-    );
-    return rows[0];
+// 🔹 Crear
+const crear = (data) => {
+  return db.query(
+    `INSERT INTO rolespermisos (IDRol, IDPermiso)
+     VALUES (?, ?)`,
+    [
+      data.IDRol,
+      data.IDPermiso
+    ]
+  )
+  .then(([result]) => result);
 };
 
-const crear = async (data) => {
-    const [result] = await db.query(
-        "INSERT INTO rolespermisos SET ?",
-        data
-    );
-    return result;
+// 🔹 Eliminar
+const eliminar = (id) => {
+  return db.query(
+    "DELETE FROM rolespermisos WHERE IDRolPermiso = ?",
+    [id]
+  )
+  .then(([result]) => result);
 };
 
-const actualizar = async (id, data) => {
-    const [result] = await db.query(
-        "UPDATE rolespermisos SET ? WHERE ID = ?",
-        [data, id]
-    );
-    return result;
+module.exports = {
+  obtener,
+  crear,
+  eliminar
 };
-
-const eliminar = async (id) => {
-    const [result] = await db.query(
-        "DELETE FROM rolespermisos WHERE ID = ?",
-        [id]
-    );
-    return result;
-};
-
-module.exports = { obtener, obtenerPorId, crear, actualizar, eliminar };

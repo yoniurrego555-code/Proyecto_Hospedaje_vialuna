@@ -1,12 +1,16 @@
 const model = require("../models/clientes.model");
 
+// 🔹 LISTAR
+exports.listar = () => model.obtener();
 
-exports.listar = () => model.getAll();
+// 🔹 OBTENER
+exports.obtener = (id) => model.obtenerPorId(id);
 
-exports.obtener = (id) => model.getById(id); // 🔥 aquí estaba el error
+// 🔹 CREAR
+exports.crear = (data) => model.crear(data);
 
-exports.crear = (data) => model.create(data);
+// 🔹 ACTUALIZAR
+exports.actualizar = (id, data) => model.actualizar(id, data);
 
-exports.actualizar = (id, data) => model.update(id, data);
-
-exports.eliminar = (id) => model.remove(id);
+// 🔹 ELIMINAR
+exports.eliminar = (id) => model.eliminar(id);

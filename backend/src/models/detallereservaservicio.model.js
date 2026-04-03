@@ -1,45 +1,75 @@
 const db = require("../config/db");
 
-// LISTAR
-const obtener = async () => {
-    const [rows] = await db.query("SELECT * FROM detallereservaservicio");
-    return rows;
+// 🔹 Obtener todos
+const obtener = () => {
+  return db.query("SELECT * FROM detallereservaservicio")
+    .then(([rows]) => rows);
 };
 
-// OBTENER POR ID
-const obtenerPorId = async (id) => {
-    const [rows] = await db.query(
-        "SELECT * FROM detallereservaservicio WHERE IDDetalle = ?",
-        [id]
-    );
-    return rows[0];
+// 🔹 Obtener por ID
+const obtenerPorId = (id) => {
+  return db.query(
+    "SELECT * FROM detallereservaservicio WHERE IDDetalleReservaServicio = ?",
+    [id]
+  )
+  .then(([rows]) => rows[0]);
 };
 
-// CREAR
-const crear = async (data) => {
-    const [result] = await db.query(
-        "INSERT INTO detallereservaservicio SET ?",
-        data
-    );
-    return result;
+// 🔹 Crear
+const crear = (data) => {
+  return db.query(
+    `INSERT INTO detallereservaservicio 
+    (IDReserva, Cantidad, Precio, Estado, IDServicio, NombreServicio)
+    VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      data.IDReserva,
+      data.Cantidad,
+      data.Precio,
+      data.Estado,
+      data.IDServicio,
+      data.NombreServicio
+    ]
+  )
+  .then(([result]) => result);
 };
 
-// ACTUALIZAR
-const actualizar = async (id, data) => {
-    const [result] = await db.query(
-        "UPDATE detallereservaservicio SET ? WHERE IDDetalle = ?",
-        [data, id]
-    );
-    return result;
+// 🔹 Actualizar
+const actualizar = (id, data) => {
+  return db.query(
+    `UPDATE detallereservaservicio SET 
+    IDReserva = ?, 
+    Cantidad = ?, 
+    Precio = ?, 
+    Estado = ?, 
+    IDServicio = ?, 
+    NombreServicio = ?
+    WHERE IDDetalleReservaServicio = ?`,
+    [
+      data.IDReserva,
+      data.Cantidad,
+      data.Precio,
+      data.Estado,
+      data.IDServicio,
+      data.NombreServicio,
+      id
+    ]
+  )
+  .then(([result]) => result);
 };
 
-// ELIMINAR
-const eliminar = async (id) => {
-    const [result] = await db.query(
-        "DELETE FROM detallereservaservicio WHERE IDDetalle = ?",
-        [id]
-    );
-    return result;
+// 🔹 Eliminar
+const eliminar = (id) => {
+  return db.query(
+    "DELETE FROM detallereservaservicio WHERE IDDetalleReservaServicio = ?",
+    [id]
+  )
+  .then(([result]) => result);
 };
 
-module.exports = { obtener, obtenerPorId, crear, actualizar, eliminar };
+module.exports = {
+  obtener,
+  obtenerPorId,
+  crear,
+  actualizar,
+  eliminar
+};

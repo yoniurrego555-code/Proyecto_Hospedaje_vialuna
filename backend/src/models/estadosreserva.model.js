@@ -1,42 +1,57 @@
-// src/models/estadosreserva.model.js
-const db = require('../config/db');
+const db = require("../config/db");
 
-const EstadosReserva = {
-  getAll: async () => {
-    const [rows] = await db.query("SELECT * FROM estadosreserva");
-    return rows;
-  },
-
-  getById: async (id) => {
-    const [rows] = await db.query("SELECT * FROM estadosreserva WHERE IDEstadoReserva = ?", [id]);
-    return rows[0];
-  },
-
-  create: async (data) => {
-    const { NombreEstado } = data;
-    const [result] = await db.query(
-      "INSERT INTO estadosreserva (NombreEstado) VALUES (?)",
-      [NombreEstado]
-    );
-    return { id: result.insertId, NombreEstado };
-  },
-
-  update: async (id, data) => {
-    const { NombreEstado } = data;
-    const [result] = await db.query(
-      "UPDATE estadosreserva SET NombreEstado = ? WHERE IDEstadoReserva = ?",
-      [NombreEstado, id]
-    );
-    return result.affectedRows;
-  },
-
-  delete: async (id) => {
-    const [result] = await db.query(
-      "DELETE FROM estadosreserva WHERE IDEstadoReserva = ?",
-      [id]
-    );
-    return result.affectedRows;
-  }
+// 🔹 Obtener todos
+const obtener = () => {
+  return db.query("SELECT * FROM estadosreserva")
+    .then(([rows]) => rows);
 };
 
-module.exports = EstadosReserva;
+// 🔹 Obtener por ID
+const obtenerPorId = (id) => {
+  return db.query(
+    "SELECT * FROM estadosreserva WHERE IdEstadoReserva = ?",
+    [id]
+  )
+  .then(([rows]) => rows[0]);
+};
+
+// 🔹 Crear
+const crear = (data) => {
+  return db.query(
+    `INSERT INTO estadosreserva (NombreEstadoReserva)
+     VALUES (?)`,
+    [data.NombreEstadoReserva]
+  )
+  .then(([result]) => result);
+};
+
+// 🔹 Actualizar
+const actualizar = (id, data) => {
+  return db.query(
+    `UPDATE estadosreserva SET 
+     NombreEstadoReserva = ?
+     WHERE IdEstadoReserva = ?`,
+    [
+      data.NombreEstadoReserva,
+      id
+    ]
+  )
+  .then(([result]) => result);
+};
+
+// 🔹 Eliminar
+const eliminar = (id) => {
+  return db.query(
+    "DELETE FROM estadosreserva WHERE IdEstadoReserva = ?",
+    [id]
+  )
+  .then(([result]) => result);
+};
+
+module.exports = {
+  obtener,
+  obtenerPorId,
+  crear,
+  actualizar,
+  eliminar
+};

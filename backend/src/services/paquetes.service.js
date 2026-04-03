@@ -1,11 +1,16 @@
 const model = require("../models/paquetes.model");
 
-exports.listar = () => model.getAll();
+// 🔹 LISTAR
+exports.listar = () => model.obtener();
 
-exports.obtener = (id) => model.getById(id); // 🔥 aquí estaba el error
+// 🔹 OBTENER
+exports.obtener = (id) => model.obtenerPorId(id);
 
-exports.crear = (data) => model.create(data);
+// 🔹 CREAR
+exports.crear = (data) => model.crear(data);
 
-exports.actualizar = (id, data) => model.update(id, data);
+// 🔹 ACTUALIZAR
+exports.actualizar = (id, data) => model.actualizar(id, data);
 
-exports.eliminar = (id) => model.remove(id);
+// 🔹 ELIMINAR
+exports.eliminar = (id) => model.eliminar(id);

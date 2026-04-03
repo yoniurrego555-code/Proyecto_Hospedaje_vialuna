@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/habitaciones.controller");
+const controller = require("../controllers/habitacion.controller");
 
 router.get("/", controller.listar);
 router.get("/:id", controller.obtener);

@@ -1,40 +1,69 @@
 const db = require("../config/db");
 
-const obtener = async () => {
-    const [rows] = await db.query("SELECT * FROM detalledereservapaquetes");
-    return rows;
+// 🔹 Obtener todos
+const obtener = () => {
+  return db.query("SELECT * FROM detalledereservapaquetes")
+    .then(([rows]) => rows);
 };
 
-const obtenerPorId = async (id) => {
-    const [rows] = await db.query(
-        "SELECT * FROM detalledereservapaquetes WHERE IDDetalle = ?",
-        [id]
-    );
-    return rows[0];
+// 🔹 Obtener por ID
+const obtenerPorId = (id) => {
+  return db.query(
+    "SELECT * FROM detalledereservapaquetes WHERE id_detalle = ?",
+    [id]
+  )
+  .then(([rows]) => rows[0]);
 };
 
-const crear = async (data) => {
-    const [result] = await db.query(
-        "INSERT INTO detalledereservapaquetes SET ?",
-        data
-    );
-    return result;
+// 🔹 Crear
+const crear = (data) => {
+  return db.query(
+    `INSERT INTO detalledereservapaquetes 
+    (sub_total, id_reserva, cantidad, IDPaquete)
+    VALUES (?, ?, ?, ?)`,
+    [
+      data.sub_total,
+      data.id_reserva,
+      data.cantidad,
+      data.IDPaquete
+    ]
+  )
+  .then(([result]) => result);
 };
 
-const actualizar = async (id, data) => {
-    const [result] = await db.query(
-        "UPDATE detalledereservapaquetes SET ? WHERE IDDetalle = ?",
-        [data, id]
-    );
-    return result;
+// 🔹 Actualizar
+const actualizar = (id, data) => {
+  return db.query(
+    `UPDATE detalledereservapaquetes SET 
+    sub_total = ?, 
+    id_reserva = ?, 
+    cantidad = ?, 
+    IDPaquete = ?
+    WHERE id_detalle = ?`,
+    [
+      data.sub_total,
+      data.id_reserva,
+      data.cantidad,
+      data.IDPaquete,
+      id
+    ]
+  )
+  .then(([result]) => result);
 };
 
-const eliminar = async (id) => {
-    const [result] = await db.query(
-        "DELETE FROM detalledereservapaquetes WHERE IDDetalle = ?",
-        [id]
-    );
-    return result;
+// 🔹 Eliminar
+const eliminar = (id) => {
+  return db.query(
+    "DELETE FROM detalledereservapaquetes WHERE id_detalle = ?",
+    [id]
+  )
+  .then(([result]) => result);
 };
 
-module.exports = { obtener, obtenerPorId, crear, actualizar, eliminar };
+module.exports = {
+  obtener,
+  obtenerPorId,
+  crear,
+  actualizar,
+  eliminar
+};

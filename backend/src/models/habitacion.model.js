@@ -1,13 +1,13 @@
 const db = require("../config/db");
 
 const obtener = () => {
-  return db.query("SELECT * FROM servicios")
+  return db.query("SELECT * FROM habitacion")
     .then(([rows]) => rows);
 };
 
 const obtenerPorId = (id) => {
   return db.query(
-    "SELECT * FROM servicios WHERE IDServicio = ?",
+    "SELECT * FROM habitacion WHERE IDHabitacion = ?",
     [id]
   )
   .then(([rows]) => rows[0]);
@@ -15,14 +15,13 @@ const obtenerPorId = (id) => {
 
 const crear = (data) => {
   return db.query(
-    `INSERT INTO servicios 
-    (NombreServicio, Descripcion, Duracion, CantidadMaximaPersonas, Costo, Estado)
-    VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO habitacion
+    (NombreHabitacion, ImagenHabitacion, Descripcion, Costo, Estado)
+    VALUES (?, ?, ?, ?, ?)`,
     [
-      data.NombreServicio,
+      data.NombreHabitacion,
+      data.ImagenHabitacion,
       data.Descripcion,
-      data.Duracion,
-      data.CantidadMaximaPersonas,
       data.Costo,
       data.Estado
     ]
@@ -32,14 +31,13 @@ const crear = (data) => {
 
 const actualizar = (id, data) => {
   return db.query(
-    `UPDATE servicios SET 
-    NombreServicio = ?, Descripcion = ?, Duracion = ?, CantidadMaximaPersonas = ?, Costo = ?, Estado = ?
-    WHERE IDServicio = ?`,
+    `UPDATE habitacion SET 
+    NombreHabitacion = ?, ImagenHabitacion = ?, Descripcion = ?, Costo = ?, Estado = ?
+    WHERE IDHabitacion = ?`,
     [
-      data.NombreServicio,
+      data.NombreHabitacion,
+      data.ImagenHabitacion,
       data.Descripcion,
-      data.Duracion,
-      data.CantidadMaximaPersonas,
       data.Costo,
       data.Estado,
       id
@@ -50,7 +48,7 @@ const actualizar = (id, data) => {
 
 const eliminar = (id) => {
   return db.query(
-    "DELETE FROM servicios WHERE IDServicio = ?",
+    "DELETE FROM habitacion WHERE IDHabitacion = ?",
     [id]
   )
   .then(([result]) => result);

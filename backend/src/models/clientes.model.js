@@ -1,55 +1,68 @@
 const db = require("../config/db");
 
-// LISTAR
-async function getAll() {
-    const [rows] = await db.query("SELECT * FROM clientes");
-    return rows;
-}
+const obtener = () => {
+  return db.query("SELECT * FROM clientes")
+    .then(([rows]) => rows);
+};
 
-// BUSCAR POR ID
-async function getById(id) {
-    const [rows] = await db.query(
-        "SELECT * FROM clientes WHERE NroDocumento = ?", 
-        [id]
-    );
-    return rows[0];
-}
+const obtenerPorId = (id) => {
+  return db.query(
+    "SELECT * FROM clientes WHERE NroDocumento = ?",
+    [id]
+  )
+  .then(([rows]) => rows[0]);
+};
 
-// CREAR
-async function create(cliente) {
-    const { NroDocumento, Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol } = cliente;
+const crear = (data) => {
+  return db.query(
+    `INSERT INTO clientes 
+    (NroDocumento, Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      data.NroDocumento,
+      data.Nombre,
+      data.Apellido,
+      data.Direccion,
+      data.Email,
+      data.Telefono,
+      data.Estado,
+      data.IDRol
+    ]
+  )
+  .then(([result]) => result);
+};
 
-    const [result] = await db.query(
-        `INSERT INTO clientes 
-        (NroDocumento, Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [NroDocumento, Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol]
-    );
+const actualizar = (id, data) => {
+  return db.query(
+    `UPDATE clientes SET 
+    Nombre = ?, Apellido = ?, Direccion = ?, Email = ?, Telefono = ?, Estado = ?, IDRol = ?
+    WHERE NroDocumento = ?`,
+    [
+      data.Nombre,
+      data.Apellido,
+      data.Direccion,
+      data.Email,
+      data.Telefono,
+      data.Estado,
+      data.IDRol,
+      id
+    ]
+  )
+  .then(([result]) => result);
+};
 
-    return result;
-}
+const eliminar = (id) => {
+  return db.query(
+    "DELETE FROM clientes WHERE NroDocumento = ?",
+    [id]
+  )
+  .then(([result]) => result);
+};
 
-// ACTUALIZAR
-async function update(id, cliente) {
-    const { Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol } = cliente;
-
-    const [result] = await db.query(
-        `UPDATE clientes 
-        SET Nombre=?, Apellido=?, Direccion=?, Email=?, Telefono=?, Estado=?, IDRol=? 
-        WHERE NroDocumento=?`,
-        [Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol, id]
-    );
-
-    return result;
-}
-
-// ELIMINAR
-async function remove(id) {
-    const [result] = await db.query(
-        "DELETE FROM clientes WHERE NroDocumento = ?", 
-        [id]
-    );
-    return result;
-}
-
-module.exports = { getAll, getById, create, update, remove };
+module.exports = {
+  obtener,
+  obtenerPorId,
+  crear,
+  actualizar,
+  eliminar
+};

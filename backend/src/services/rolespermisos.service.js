@@ -1,7 +1,16 @@
 const model = require("../models/rolespermisos.model");
 
-exports.listar = async () => await model.obtener();
-exports.obtener = async (id) => await model.obtenerPorId(id);
-exports.crear = async (data) => await model.crear(data);
-exports.actualizar = async (id, data) => await model.actualizar(id, data);
-exports.eliminar = async (id) => await model.eliminar(id);
+// 🔹 LISTAR
+exports.listar = () => model.obtener();
+
+// 🔹 OBTENER
+exports.obtener = (id) => model.obtenerPorId(id);
+
+// 🔹 CREAR
+exports.crear = (data) => model.crear(data);
+
+// 🔹 ACTUALIZAR
+exports.actualizar = (id, data) => model.actualizar(id, data);
+
+// 🔹 ELIMINAR
+exports.eliminar = (id) => model.eliminar(id);

@@ -1,36 +1,67 @@
 const db = require("../config/db");
 
-async function getAll() {
-    const [rows] = await db.query("SELECT * FROM paquetes");
-    return rows;
-}
+const obtener = () => {
+  return db.query("SELECT * FROM paquetes")
+    .then(([rows]) => rows);
+};
 
-async function getById(id) {
-    const [rows] = await db.query(
-        "SELECT * FROM paquetes WHERE IDPaquete = ?", [id]
-    );
-    return rows[0];
-}
+const obtenerPorId = (id) => {
+  return db.query(
+    "SELECT * FROM paquetes WHERE IDPaquete = ?",
+    [id]
+  )
+  .then(([rows]) => rows[0]);
+};
 
-async function create(data) {
-    const [result] = await db.query(
-        "INSERT INTO paquetes SET ?", data
-    );
-    return result;
-}
+const crear = (data) => {
+  return db.query(
+    `INSERT INTO paquetes 
+    (NombrePaquete, ImagenPaquete, Descripcion, IDHabitacion, IDServicio, Precio, Estado)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      data.NombrePaquete,
+      data.ImagenPaquete,
+      data.Descripcion,
+      data.IDHabitacion,
+      data.IDServicio,
+      data.Precio,
+      data.Estado
+    ]
+  )
+  .then(([result]) => result);
+};
 
-async function update(id, data) {
-    const [result] = await db.query(
-        "UPDATE paquetes SET ? WHERE IDPaquete = ?", [data, id]
-    );
-    return result;
-}
+const actualizar = (id, data) => {
+  return db.query(
+    `UPDATE paquetes SET 
+    NombrePaquete = ?, ImagenPaquete = ?, Descripcion = ?, IDHabitacion = ?, IDServicio = ?, Precio = ?, Estado = ?
+    WHERE IDPaquete = ?`,
+    [
+      data.NombrePaquete,
+      data.ImagenPaquete,
+      data.Descripcion,
+      data.IDHabitacion,
+      data.IDServicio,
+      data.Precio,
+      data.Estado,
+      id
+    ]
+  )
+  .then(([result]) => result);
+};
 
-async function remove(id) {
-    const [result] = await db.query(
-        "DELETE FROM paquetes WHERE IDPaquete = ?", [id]
-    );
-    return result;
-}
+const eliminar = (id) => {
+  return db.query(
+    "DELETE FROM paquetes WHERE IDPaquete = ?",
+    [id]
+  )
+  .then(([result]) => result);
+};
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = {
+  obtener,
+  obtenerPorId,
+  crear,
+  actualizar,
+  eliminar
+};

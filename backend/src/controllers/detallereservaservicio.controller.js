@@ -1,26 +1,54 @@
 const service = require("../services/detallereservaservicio.service");
 
-exports.listar = async (req, res) => {
-    const data = await service.listar();
-    res.json(data);
+// 🔹 LISTAR
+exports.listar = (req, res) => {
+  service.listar()
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error("❌ ERROR:", err);
+      res.status(500).json({ error: "Error al listar" });
+    });
 };
 
-exports.obtener = async (req, res) => {
-    const data = await service.obtener(req.params.id);
-    res.json(data);
+// 🔹 OBTENER
+exports.obtener = (req, res) => {
+  service.obtener(req.params.id)
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al obtener" });
+    });
 };
 
-exports.crear = async (req, res) => {
-    const data = await service.crear(req.body);
-    res.json(data);
+// 🔹 CREAR
+exports.crear = (req, res) => {
+  service.crear(req.body)
+    .then(result => res.json({
+      mensaje: "Creado correctamente",
+      resultado: result
+    }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al crear" });
+    });
 };
 
-exports.actualizar = async (req, res) => {
-    await service.actualizar(req.params.id, req.body);
-    res.json({ mensaje: "Actualizado" });
+// 🔹 ACTUALIZAR
+exports.actualizar = (req, res) => {
+  service.actualizar(req.params.id, req.body)
+    .then(() => res.json({ mensaje: "Actualizado" }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al actualizar" });
+    });
 };
 
-exports.eliminar = async (req, res) => {
-    await service.eliminar(req.params.id);
-    res.json({ mensaje: "Eliminado" });
+// 🔹 ELIMINAR
+exports.eliminar = (req, res) => {
+  service.eliminar(req.params.id)
+    .then(() => res.json({ mensaje: "Eliminado" }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al eliminar" });
+    });
 };
