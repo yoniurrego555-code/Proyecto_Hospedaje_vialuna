@@ -1,46 +1,65 @@
 import { getHabitaciones } from "./api.js";
 
-// 🔐 Verificar sesión
-const usuario = localStorage.getItem('usuario');
+document.addEventListener("DOMContentLoaded", () => {
 
-if (!usuario) {
-  // Redirigir al login (SIN / al inicio)
-window.location.href = 'public/login.html';
-}
+  console.log("📦 app.js cargado");
 
-// 🔹 Redirección a reserva
-window.irAReserva = function(id) {
-window.location.href = `pages/reserva.html?id=${id}`;
-};
+  // 🔐 Verificar sesión
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
 
-// 🔹 Listar habitaciones
-getHabitaciones()
-.then(habitaciones => {
-    let html = "";
-
-    habitaciones.forEach(h => {
-    html += `
-        <div class="card">
-        <h3>🏨 ${h.NombreHabitacion}</h3>
-        <p>${h.Descripcion}</p>
-        <p><strong>$${h.Costo}</strong></p>
-        <button onclick="irAReserva(${h.IDHabitacion})">
-            Reservar
-        </button>
-        </div>
-    `;
-    });
-
-    document.getElementById("habitaciones").innerHTML = html;
-})
-.catch(err => console.error(err));
-
-// 🔓 Logout
-const logoutBtn = document.getElementById('logoutBtn');
-
-if (logoutBtn) {
-logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('usuario');
+  if (!usuario) {
     window.location.href = 'public/login.html';
+    return;
+  }
+
+  console.log("👤 Usuario:", usuario);
+
+  // ==========================
+  // 🔹 Redirección a reserva
+  // ==========================
+  window.irAReserva = function(id) {
+    window.location.href = `pages/reserva.html?id=${id}`;
+  };
+
+  // ==========================
+  // 🔹 Listar habitaciones
+  // ==========================
+  getHabitaciones()
+    .then(habitaciones => {
+
+      const contenedor = document.getElementById("habitacion");
+
+      if (!contenedor) return;
+
+      let html = "";
+
+      habitaciones.forEach(h => {
+        html += `
+          <div class="card">
+            <h3>🏨 ${h.NombreHabitacion}</h3>
+            <p>${h.Descripcion}</p>
+            <p><strong>$${h.Costo}</strong></p>
+            <button type="button" onclick="irAReserva(${h.IDHabitacion})">
+              Reservar
+            </button>
+          </div>
+        `;
+      });
+
+      contenedor.innerHTML = html;
+    })
+    .catch(err => console.error("❌ Error habitaciones:", err));
+
+  // ==========================
+  // 🔓 Logout
+  // ==========================
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('usuario');
+      window.location.href = 'public/login.html';
+    });
+  }
+
 });
-}

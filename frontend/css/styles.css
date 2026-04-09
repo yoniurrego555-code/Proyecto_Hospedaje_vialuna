@@ -1,5 +1,5 @@
 /* =========================
-🌍 ESTILO GLOBAL
+🌍 GLOBAL (MUY BÁSICO)
 ========================= */
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -7,7 +7,7 @@ body {
 }
 
 /* =========================
-🔥 LOGIN (FONDO DBZ)
+🔥 LOGIN (NO TOCAR)
 ========================= */
 .login-body {
   display: flex;
@@ -23,150 +23,154 @@ body {
   position: relative;
 }
 
-/* Capa oscura */
 .login-body::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.6);
-  z-index: 0;
 }
 
-/* Contenedor login */
 .login-container {
   position: relative;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 40px 35px;
+  background: white;
+  padding: 40px;
   border-radius: 20px;
   width: 350px;
   text-align: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-  animation: fadeIn 0.8s ease;
 }
 
-/* Título */
-.login-container h2 {
-  margin-bottom: 25px;
-  color: #1e3c72;
-  font-size: 28px;
-}
-
-/* Inputs */
-.login-container input {
+.login-container input,
+.login-container select {
   width: 100%;
-  margin: 12px 0;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  transition: 0.3s;
-}
-
-.login-container input:focus {
-  border-color: #ff6a00;
-  box-shadow: 0 0 8px rgba(255, 106, 0, 0.5);
-  outline: none;
-}
-
-/* Botón principal */
-.login-container button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 15px;
-  background: linear-gradient(45deg, #ff6a00, #ff8c00);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.login-container button:hover {
-  background: linear-gradient(45deg, #ff8c00, #e65c00);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
-}
-
-/* Botón secundario */
-.secondary-btn {
-  margin-top: 10px;
-  background: #1e3c72 !important;
-}
-
-.secondary-btn:hover {
-  background: #16325a !important;
-}
-
-/* Animación */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  padding: 12px;
+  margin: 10px 0;
 }
 
 /* =========================
-  🏨 DASHBOARD
+🏨 RESERVAS (NUEVO - AISLADO)
 ========================= */
-.dashboard-body {
-  background: #f4f6f9;
+.reserva-body {
+  background: linear-gradient(135deg, #eef2ff, #f8f9ff);
 }
 
-/* Header */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* Contenedor tarjetas */
-#habitaciones {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-/* Tarjetas de habitaciones */
-.card {
-  background: white;
-  padding: 25px;
-  width: 200px;
-  border-radius: 15px;
+/* Contenedor */
+.reserva-body .container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
   text-align: center;
-  font-weight: bold;
-  box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+}
+
+.reserva-body h1 {
+  color: #4f46e5;
+}
+
+.reserva-body .subtitulo {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Card principal */
+.reserva-body .card-form {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Grid formulario */
+.reserva-body .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  text-align: left;
+}
+
+/* Inputs SOLO reservas */
+.reserva-body input,
+.reserva-body select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Habitaciones */
+.reserva-body .grid-cards {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.reserva-body .card {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
+}
+
+/* Servicios tipo botones */
+.reserva-body .servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.reserva-body .servicio-item {
+  background: #f1f3ff;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
   transition: 0.3s;
 }
 
-.card:hover {
-  transform: scale(1.05);
+.reserva-body .servicio-item:hover {
+  border-color: #6c63ff;
 }
 
-/* Botones generales */
-button {
+.reserva-body .servicio-item.active {
+  background: #6c63ff;
+  color: white;
+}
+
+/* Botón */
+.reserva-body .btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(45deg, #6c63ff, #8a7fff);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin-top: 20px;
   cursor: pointer;
 }
 
-/* Botón cerrar sesión */
-#logoutBtn {
-  padding: 10px 15px;
-  background: red;
+/* Responsive */
+@media (max-width: 768px) {
+  .reserva-body .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reserva-body .servicios-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+button {
+  background-color: #e74c3c;
   color: white;
   border: none;
-  border-radius: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-#logoutBtn:hover {
-  background: darkred;
+button:hover {
+  background-color: #c0392b;
 }

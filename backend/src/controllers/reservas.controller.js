@@ -1,108 +1,210 @@
 const service = require("../services/reservas.service");
 const db = require("../config/db");
 
-// 🔹 Listar
+// ==========================
+// 🔹 LISTAR
+// ==========================
 exports.listar = (req, res) => {
   service.listar()
     .then(data => res.json(data))
     .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: "Error al listar reservas" });
+      console.error("❌ Error al listar:", err);
+      res.status(500).json({ error: err.message });
     });
 };
 
-// 🔹 Obtener por ID
+// ==========================
+// 🔹 OBTENER POR ID
+// ==========================
 exports.obtener = (req, res) => {
   service.obtener(req.params.id)
     .then(data => res.json(data))
     .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: "Error al obtener reserva" });
+      console.error("❌ Error al obtener:", err);
+      res.status(500).json({ error: err.message });
     });
 };
 
-// 🔹 Crear (🔥 CON PROMESAS COMPLETO)
+// ==========================
+// 🔹 CREAR RESERVA
+// ==========================
 exports.crear = (req, res) => {
 
   console.log("📥 BODY RECIBIDO:", req.body);
 
   const { paquetes, servicios, ...reservaData } = req.body;
 
-  // 🔹 1. Crear reserva
-  service.crear(reservaData)
+  // 🔥 VALIDACIONES
+  if (!reservaData.id_habitacion) {
+    return res.status(400).json({ error: "Falta habitación" });
+  }
+
+  if (!reservaData.fecha_inicio || !reservaData.fecha_fin) {
+    return res.status(400).json({ error: "Fechas obligatorias" });
+  }
+
+  let habitacion;
+  let idReserva;
+  let subtotal = 0;
+  let totalServicios = 0;
+  let total = 0;
+
+  // ==========================
+  // 🔹 FLUJO
+  // ==========================
+  db.query(
+    "SELECT * FROM habitacion WHERE IDHabitacion = ?",
+    [reservaData.id_habitacion]
+  )
+    .then(([habitacionDB]) => {
+
+      if (habitacionDB.length === 0) {
+        throw new Error("Habitación no encontrada");
+      }
+
+      habitacion = habitacionDB[0];
+
+      const inicio = new Date(reservaData.fecha_inicio);
+      const fin = new Date(reservaData.fecha_fin);
+
+      const dias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+
+      if (dias <= 0) {
+        throw new Error("Fechas inválidas");
+      }
+
+      subtotal = dias * habitacion.Costo;
+
+      // 🔹 SERVICIOS
+      if (servicios && servicios.length > 0) {
+
+        const serviciosIds = servicios.map(s => parseInt(s));
+
+        return db.query(
+          `SELECT Costo FROM servicios 
+           WHERE IDServicio IN (${serviciosIds.map(() => '?').join(',')})`,
+          serviciosIds
+        );
+      }
+
+      return [ [] ];
+    })
+
+    .then(([serviciosDB]) => {
+
+      if (serviciosDB.length > 0) {
+        totalServicios = serviciosDB.reduce(
+          (acc, s) => acc + parseFloat(s.Costo), 0
+        );
+      }
+
+      total = subtotal + totalServicios;
+
+      reservaData.subtotal = subtotal;
+      reservaData.total = total;
+
+      // 🔥 IMPORTANTE: asegurar id_habitacion
+      reservaData.id_habitacion = parseInt(reservaData.id_habitacion);
+
+      return service.crear(reservaData);
+    })
+
     .then(result => {
 
-      const idReserva = result.insertId;
-      console.log("🆔 ID RESERVA:", idReserva);
+      idReserva = result.insertId;
 
-      // 🔹 2. Guardar paquetes
-      let promesasPaquetes = [];
-
+      // 🔹 GUARDAR PAQUETES
       if (paquetes && paquetes.length > 0) {
-        promesasPaquetes = paquetes.map(p => {
-          return db.query(
-            `INSERT INTO detalledereservapaquetes 
-            (id_reserva, IDPaquete, cantidad, sub_total) 
-            VALUES (?, ?, 1, 0)`,
-            [idReserva, p]
-          );
-        });
+        return Promise.all(
+          paquetes.map(p =>
+            db.query(
+              `INSERT INTO detalledereservapaquetes 
+               (id_reserva, IDPaquete, cantidad, sub_total) 
+               VALUES (?, ?, 1, 0)`,
+              [idReserva, p]
+            )
+          )
+        );
       }
 
-      // 🔹 3. Guardar servicios
-      let promesasServicios = [];
+      return Promise.resolve();
+    })
 
+    .then(() => {
+
+      // 🔹 GUARDAR SERVICIOS
       if (servicios && servicios.length > 0) {
-        promesasServicios = servicios.map(s => {
-          return db.query(
-            `INSERT INTO detallereservaservicio 
-            (IDReserva, IDServicio, Cantidad, Precio, Estado) 
-            VALUES (?, ?, 1, 0, 'activo')`,
-            [idReserva, s]
-          );
-        });
+        return Promise.all(
+          servicios.map(s =>
+            db.query(
+              `INSERT INTO detallereservaservicio 
+               (IDReserva, IDServicio, Cantidad, Precio) 
+               VALUES (?, ?, 1, 0)`,
+              [idReserva, s]
+            )
+          )
+        );
       }
 
-      // 🔥 4. Ejecutar TODO junto
-      return Promise.all([
-        ...promesasPaquetes,
-        ...promesasServicios
-      ])
-      .then(() => {
-        console.log("📦🛎️ Detalles guardados");
+      return Promise.resolve();
+    })
 
-        res.json({
-          mensaje: "Reserva completa creada ✅",
-          idReserva: idReserva
-        });
+    .then(() => {
+
+      res.json({
+        mensaje: "Reserva creada correctamente ✅",
+        idReserva,
+        subtotal,
+        total
       });
 
     })
+
     .catch(err => {
-      console.error("❌ ERROR:", err);
-      res.status(500).json({
-        error: "Error al crear reserva",
-        detalle: err
-      });
+      console.error("❌ ERROR EN CREAR:", err);
+      res.status(500).json({ error: err.message });
     });
 };
 
-// 🔹 Actualizar
+// ==========================
+// 🔹 ACTUALIZAR
+// ==========================
 exports.actualizar = (req, res) => {
   service.actualizar(req.params.id, req.body)
-    .then(() => res.json({ mensaje: "Actualizado" }))
+    .then(() => res.json({ mensaje: "Actualizado correctamente ✅" }))
     .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: "Error al actualizar" });
+      console.error("❌ Error al actualizar:", err);
+      res.status(500).json({ error: err.message });
     });
 };
 
-// 🔹 Eliminar
+// ==========================
+// 🔹 CANCELAR
+// ==========================
 exports.eliminar = (req, res) => {
-  service.eliminar(req.params.id)
-    .then(() => res.json({ mensaje: "Eliminado" }))
+
+  const idReserva = req.params.id;
+  const idUsuario = req.headers["idusuario"] || req.body.idUsuario;
+
+  if (!idUsuario) {
+    return res.status(401).json({
+      mensaje: "Usuario no identificado"
+    });
+  }
+
+  service.eliminar(idReserva, idUsuario)
+    .then(result => {
+
+      if (result.affectedRows === 0) {
+        return res.status(403).json({
+          mensaje: "No puedes cancelar esta reserva"
+        });
+      }
+
+      res.json({ mensaje: "Reserva cancelada correctamente ✅" });
+    })
     .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: "Error al eliminar" });
+      console.error("❌ Error al cancelar:", err);
+      res.status(500).json({ error: err.message });
     });
 };
