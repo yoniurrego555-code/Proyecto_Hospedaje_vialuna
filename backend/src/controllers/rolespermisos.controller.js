@@ -29,7 +29,7 @@ exports.crear = (req, res) => {
     }))
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: "Error al crear" });
+      res.status(err.status || 500).json({ error: err.message || "Error al crear" });
     });
 };
 
@@ -39,7 +39,7 @@ exports.actualizar = (req, res) => {
     .then(() => res.json({ mensaje: "Actualizado" }))
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: "Error al actualizar" });
+      res.status(err.status || 500).json({ error: err.message || "Error al actualizar" });
     });
 };
 
@@ -49,6 +49,15 @@ exports.eliminar = (req, res) => {
     .then(() => res.json({ mensaje: "Eliminado" }))
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: "Error al eliminar" });
+      res.status(err.status || 500).json({ error: err.message || "Error al eliminar" });
+    });
+};
+
+exports.sembrarPermisosBase = (req, res) => {
+  service.sembrarPermisosBase()
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al crear permisos base" });
     });
 };

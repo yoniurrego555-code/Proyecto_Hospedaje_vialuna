@@ -2,42 +2,71 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="../css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | ViaLuna</title>
+  <link rel="stylesheet" href="../css/app.css">
 </head>
+<body>
+  <main class="auth-layout">
+    <section class="auth-card">
+      <div class="auth-card__header">
+        <span class="badge">Acceso al sistema</span>
+        <h2>Inicia sesion en ViaLuna</h2>
+        <p id="loginHelp">Selecciona si vas a ingresar como cliente o administrador.</p>
+      </div>
 
-<body class="login-body">
+      <form id="loginForm" class="auth-form">
+        <div class="field-group">
+          <label for="tipoAcceso">Tipo de acceso</label>
+          <select id="tipoAcceso">
+            <option value="cliente">Cliente</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
 
-  <div class="login-container">
-    <h2>Iniciar Sesión 🏨</h2>
+        <div class="field-group">
+          <label for="email" id="fieldOneLabel">Correo electronico</label>
+          <input type="email" id="email" placeholder="cliente@correo.com" required>
+        </div>
 
-    <form id="loginForm">
+        <div class="field-group">
+          <label for="documento" id="fieldTwoLabel">Numero de documento</label>
+          <input type="text" id="documento" placeholder="Ingresa tu documento" required>
+        </div>
 
-      <input 
-        type="email" 
-        id="email" 
-        placeholder="Correo" 
-        required
-      >
+        <p id="loginError" class="feedback" aria-live="polite"></p>
 
-      <!-- (Opcional por ahora, no validamos password aún) -->
-      <input 
-        type="password" 
-        id="password" 
-        placeholder="Contraseña"
-      >
+        <button type="button" class="btn-ghost" id="forgotPasswordBtn">
+          Recuperar contrasena
+        </button>
 
-      <button type="submit">Ingresar</button>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Ingresar</button>
+          <button type="button" class="btn-secondary" onclick="irRegistro()">Registrarme</button>
+        </div>
+      </form>
 
-      <!-- Botón registro -->
-      <button type="button" onclick="irRegistro()" class="secondary-btn">
-        Registrarse
-      </button>
+      <form id="forgotPasswordForm" class="auth-form" hidden>
+        <div class="auth-card__header">
+          <h3>Recuperar contrasena</h3>
+          <p>Ingresa el Gmail registrado del administrador para recibir el enlace de recuperacion.</p>
+        </div>
 
-    </form>
-  </div>
+        <div class="field-group">
+          <label for="recoveryEmail">Gmail registrado</label>
+          <input type="email" id="recoveryEmail" placeholder="admin@gmail.com">
+        </div>
+
+        <p id="forgotPasswordFeedback" class="feedback" aria-live="polite"></p>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Enviar enlace</button>
+          <button type="button" class="btn-secondary" id="cancelRecoveryBtn">Cancelar</button>
+        </div>
+      </form>
+    </section>
+  </main>
 
   <script type="module" src="../js/auth.js"></script>
-
 </body>
 </html>

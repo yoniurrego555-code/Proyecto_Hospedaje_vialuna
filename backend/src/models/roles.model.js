@@ -2,8 +2,7 @@ const db = require("../config/db");
 
 // 🔹 Obtener todos
 const obtener = () => {
-  return db.query("SELECT * FROM roles")
-    .then(([rows]) => rows);
+  return db.query("SELECT * FROM roles ORDER BY IDRol DESC").then(([rows]) => rows);
 };
 
 // 🔹 Obtener por ID
@@ -16,6 +15,15 @@ const obtenerPorId = (id) => {
 };
 
 // 🔹 Crear
+const obtenerPorNombre = (nombre, excluirId = null) => {
+  const sql = excluirId
+    ? "SELECT * FROM roles WHERE LOWER(Nombre) = LOWER(?) AND IDRol <> ? LIMIT 1"
+    : "SELECT * FROM roles WHERE LOWER(Nombre) = LOWER(?) LIMIT 1";
+  const params = excluirId ? [nombre, excluirId] : [nombre];
+
+  return db.query(sql, params).then(([rows]) => rows[0]);
+};
+
 const crear = (data) => {
   return db.query(
     `INSERT INTO roles (Nombre, Descripcion, Estado)
@@ -57,6 +65,7 @@ const eliminar = (id) => {
 module.exports = {
   obtener,
   obtenerPorId,
+  obtenerPorNombre,
   crear,
   actualizar,
   eliminar

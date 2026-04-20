@@ -6,6 +6,9 @@ exports.listar = () => model.obtener();
 // 🔹 OBTENER
 exports.obtener = (id) => model.obtenerPorId(id);
 
+// 🔹 LOGIN
+exports.login = (credenciales) => model.obtenerPorCredenciales(credenciales);
+
 // 🔹 CREAR
 exports.crear = (data) => model.crear(data);
 

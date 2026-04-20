@@ -20,6 +20,35 @@ exports.obtener = (req, res) => {
     });
 };
 
+// 🔹 LOGIN
+exports.login = (req, res) => {
+  const { Email, NroDocumento } = req.body;
+
+  if (!Email || !NroDocumento) {
+    return res.status(400).json({
+      error: "Correo y documento son obligatorios"
+    });
+  }
+
+  service.login({ Email, NroDocumento })
+    .then(cliente => {
+      if (!cliente) {
+        return res.status(401).json({
+          error: "Credenciales invalidas"
+        });
+      }
+
+      res.json({
+        mensaje: "Login exitoso",
+        usuario: cliente
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Error al iniciar sesion" });
+    });
+};
+
 // 🔹 CREAR
 exports.crear = (req, res) => {
   service.crear(req.body)

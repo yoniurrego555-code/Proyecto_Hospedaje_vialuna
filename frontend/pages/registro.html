@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro | ViaLuna</title>
+  <link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+  <main class="auth-layout">
+    <section class="auth-card auth-card--wide">
+      <div class="page-toolbar">
+        <button type="button" class="btn-ghost back-button" onclick="window.history.back()">← Volver</button>
+      </div>
+
+      <div class="auth-card__header">
+        <span class="badge">Registro de clientes</span>
+        <h2>Crea tu cuenta para reservar</h2>
+        <p>Este formulario registra clientes para reservas y acceso como cliente.</p>
+      </div>
+
+      <div class="context-note">
+        <strong>Importante:</strong> aqui se crean clientes. Los administradores y usuarios internos se crean desde el modulo de seguridad.
+      </div>
+
+      <form id="registroForm" class="auth-form">
+        <div class="form-grid">
+          <div class="field-group">
+            <label for="documento">Documento</label>
+            <input type="text" id="documento" required>
+          </div>
+
+          <div class="field-group">
+            <label for="telefono">Telefono</label>
+            <input type="tel" id="telefono" required>
+          </div>
+
+          <div class="field-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" required>
+          </div>
+
+          <div class="field-group">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" required>
+          </div>
+
+          <div class="field-group full">
+            <label for="direccion">Direccion</label>
+            <input type="text" id="direccion" required>
+          </div>
+
+          <div class="field-group full">
+            <label for="email">Correo electronico</label>
+            <input type="email" id="email" required>
+          </div>
+        </div>
+
+        <p id="registroFeedback" class="feedback" aria-live="polite"></p>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Guardar registro</button>
+          <a class="btn-secondary" href="../public/login.html">Volver al login</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="../js/registro.js"></script>
+</body>
+</html>

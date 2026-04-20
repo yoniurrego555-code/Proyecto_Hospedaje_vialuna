@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/reservas.controller");
+const controller = require("../controllers/estadosreserva.controller");
 
 router.get("/", controller.listar);
 router.get("/:id", controller.obtener);

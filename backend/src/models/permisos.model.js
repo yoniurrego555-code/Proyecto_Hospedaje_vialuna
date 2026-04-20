@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 // 🔹 Obtener todos
 const obtener = () => {
-  return db.query("SELECT * FROM permisos")
+  return db.query("SELECT * FROM permisos ORDER BY IDPermiso DESC")
     .then(([rows]) => rows);
 };
 
@@ -16,6 +16,15 @@ const obtenerPorId = (id) => {
 };
 
 // 🔹 Crear
+const obtenerPorNombre = (nombre, excluirId = null) => {
+  const sql = excluirId
+    ? "SELECT * FROM permisos WHERE LOWER(NombrePermisos) = LOWER(?) AND IDPermiso <> ? LIMIT 1"
+    : "SELECT * FROM permisos WHERE LOWER(NombrePermisos) = LOWER(?) LIMIT 1";
+  const params = excluirId ? [nombre, excluirId] : [nombre];
+
+  return db.query(sql, params).then(([rows]) => rows[0]);
+};
+
 const crear = (data) => {
   return db.query(
     `INSERT INTO permisos (NombrePermisos, EstadoPermisos, Descripcion, IsActive)
@@ -59,6 +68,7 @@ const eliminar = (id) => {
 module.exports = {
   obtener,
   obtenerPorId,
+  obtenerPorNombre,
   crear,
   actualizar,
   eliminar

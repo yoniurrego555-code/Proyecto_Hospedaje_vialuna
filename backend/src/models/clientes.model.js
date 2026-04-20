@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
 const obtener = () => {
-  return db.query("SELECT * FROM clientes")
+  return db.query("SELECT * FROM clientes ORDER BY Nombre, Apellido")
     .then(([rows]) => rows);
 };
 
@@ -9,6 +9,31 @@ const obtenerPorId = (id) => {
   return db.query(
     "SELECT * FROM clientes WHERE NroDocumento = ?",
     [id]
+  )
+  .then(([rows]) => rows[0]);
+};
+
+const obtenerPorCredenciales = ({ Email, NroDocumento }) => {
+  return db.query(
+    `SELECT *
+     FROM clientes
+     WHERE LOWER(Email) = LOWER(?)
+       AND NroDocumento = ?
+       AND Estado = 1
+     LIMIT 1`,
+    [Email, NroDocumento]
+  )
+  .then(([rows]) => rows[0]);
+};
+
+const obtenerPorDocumentoOEmail = ({ NroDocumento, Email }) => {
+  return db.query(
+    `SELECT *
+     FROM clientes
+     WHERE NroDocumento = ?
+        OR LOWER(Email) = LOWER(?)
+     LIMIT 1`,
+    [NroDocumento, Email]
   )
   .then(([rows]) => rows[0]);
 };
@@ -62,6 +87,8 @@ const eliminar = (id) => {
 module.exports = {
   obtener,
   obtenerPorId,
+  obtenerPorCredenciales,
+  obtenerPorDocumentoOEmail,
   crear,
   actualizar,
   eliminar

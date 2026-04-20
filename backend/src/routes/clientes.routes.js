@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/clientes.controller");
+const controller = require("../controllers/clientes.main.controller");
 
 router.get("/", controller.listar);
+router.get("/:id", controller.obtener);
+router.post("/login", controller.login);
 router.post("/", controller.crear);
 router.put("/:id", controller.actualizar);
 router.delete("/:id", controller.eliminar);

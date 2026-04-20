@@ -16,6 +16,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/frontend", express.static(path.resolve(__dirname, "../../frontend")));
 
 
 // ======================
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 // 👤 Usuarios y clientes
 app.use("/api/usuarios", require("./routes/usuarios.routes"));
 app.use("/api/clientes", require("./routes/clientes.routes"));
+app.use("/api/password-recovery", require("./routes/passwordrecovery.routes"));
 
 // 🔐 Seguridad
 app.use("/api/roles", require("./routes/roles.routes"));

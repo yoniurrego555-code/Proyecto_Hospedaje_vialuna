@@ -1,15 +1,66 @@
 const db = require("../config/db");
 
-// 🔹 Obtener todos los paquetes
 const obtener = () => {
-  return db.query("SELECT * FROM paquetes")
+  return db.query(`
+    SELECT
+      p.*,
+        h.NombreHabitacion AS HabitacionIncluidaNombre,
+        h.Descripcion AS HabitacionIncluidaDescripcion,
+        h.Costo AS HabitacionIncluidaCosto,
+        CASE h.NombreHabitacion
+          WHEN 'Suite' THEN 3
+          WHEN 'Doble' THEN 2
+          WHEN 'Sencilla' THEN 1
+          WHEN 'Familiar Deluxe' THEN 5
+          ELSE 2
+        END AS HabitacionIncluidaCapacidad,
+        CASE h.NombreHabitacion
+          WHEN 'Suite' THEN 'suite-ejecutiva.svg'
+          WHEN 'Doble' THEN 'doble-confort.svg'
+          WHEN 'Sencilla' THEN 'sencilla-serena.svg'
+          WHEN 'Familiar Deluxe' THEN 'familiar-deluxe.svg'
+          ELSE 'suite-ejecutiva.svg'
+        END AS HabitacionIncluidaImagen,
+      s.NombreServicio AS ServicioIncluidoNombre,
+      s.Descripcion AS ServicioIncluidoDescripcion
+    FROM paquetes p
+    LEFT JOIN habitacion h
+      ON h.IDHabitacion = p.IDHabitacion
+    LEFT JOIN servicios s
+      ON s.IDServicio = p.IDServicio
+    ORDER BY p.NombrePaquete
+  `)
     .then(([rows]) => rows);
 };
 
 // 🔹 Obtener por ID
 const obtenerPorId = (id) => {
   return db.query(
-    "SELECT * FROM paquetes WHERE IDPaquete = ?",
+    `
+      SELECT
+        p.*,
+        h.NombreHabitacion AS HabitacionIncluidaNombre,
+        h.Descripcion AS HabitacionIncluidaDescripcion,
+        h.Costo AS HabitacionIncluidaCosto,
+        CASE h.NombreHabitacion
+          WHEN 'Suite' THEN 3
+          WHEN 'Doble' THEN 2
+          WHEN 'Sencilla' THEN 1
+          WHEN 'Familiar Deluxe' THEN 5
+          ELSE 2
+        END AS HabitacionIncluidaCapacidad,
+        CASE h.NombreHabitacion
+          WHEN 'Suite' THEN 'suite-ejecutiva.svg'
+          WHEN 'Doble' THEN 'doble-confort.svg'
+          WHEN 'Sencilla' THEN 'sencilla-serena.svg'
+          WHEN 'Familiar Deluxe' THEN 'familiar-deluxe.svg'
+          ELSE 'suite-ejecutiva.svg'
+        END AS HabitacionIncluidaImagen
+      FROM paquetes p
+      LEFT JOIN habitacion h
+        ON h.IDHabitacion = p.IDHabitacion
+      WHERE p.IDPaquete = ?
+    `,
     [id]
   )
   .then(([rows]) => {
@@ -23,6 +74,16 @@ const obtenerPorId = (id) => {
     .then(([servicios]) => {
       return {
         ...paquete,
+        habitacion: paquete.IDHabitacion
+          ? {
+              id: paquete.IDHabitacion,
+              nombre: paquete.HabitacionIncluidaNombre,
+              descripcion: paquete.HabitacionIncluidaDescripcion,
+              costo: Number(paquete.HabitacionIncluidaCosto || 0),
+              capacidad: Number(paquete.HabitacionIncluidaCapacidad || 0),
+              imagen: paquete.HabitacionIncluidaImagen || ""
+            }
+          : null,
         servicios: servicios || []
       };
     });
