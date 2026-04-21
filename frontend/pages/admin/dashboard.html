@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es" data-auth-pending>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin | ViaLuna</title>
+  <link rel="stylesheet" href="../../css/app.css">
+  <script type="module">
+    import { protectPage } from "../../js/authGuard.js";
+    protectPage({ requiredRole: "admin" });
+  </script>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <a class="brand sidebar__brand" href="./dashboard.html">
+          <span class="brand__mark">VL</span>
+          <span class="brand__text">
+            <h1>ViaLuna</h1>
+            <p>Panel administrativo</p>
+          </span>
+        </a>
+
+        <nav class="sidebar__nav" aria-label="Menu admin">
+          <a class="active" href="./dashboard.html">Dashboard</a>
+          <a href="./reservas.html">Reservas</a>
+          <a href="./clientes.html">Clientes y catalogo</a>
+          <a href="./roles.html">Roles</a>
+          <a href="./permisos.html">Permisos</a>
+        </nav>
+
+        <div class="sidebar__footer">
+          <span class="user-chip" id="userName">Administrador</span>
+          <button type="button" class="btn-ghost" id="logoutBtn">Cerrar sesion</button>
+        </div>
+      </aside>
+
+      <main class="page-content dashboard-content">
+        <section class="hero">
+          <article class="hero-card">
+            <span class="badge">Administrador</span>
+            <h2>Operacion general del hospedaje</h2>
+            <p>Este dashboard consolida reservas globales, clientes activos y el estado del catalogo sin mezclar el flujo del cliente.</p>
+            <div class="hero-card__actions">
+              <a class="btn-primary" href="./reservas.html">Gestionar reservas</a>
+              <a class="btn-secondary" href="./clientes.html">Ver clientes y catalogo</a>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="section-title">
+              <div>
+                <h2>Actividad reciente</h2>
+                <p>Ultimas reservas registradas en el sistema.</p>
+              </div>
+            </div>
+            <div id="recentReservations" class="list-stack"></div>
+          </article>
+        </section>
+
+        <section class="metrics-grid">
+          <article class="metric-card">
+            <span>Reservas totales</span>
+            <strong id="metricReservations">0</strong>
+          </article>
+          <article class="metric-card">
+            <span>Reservas activas</span>
+            <strong id="metricActive">0</strong>
+          </article>
+          <article class="metric-card">
+            <span>Clientes activos</span>
+            <strong id="metricClients">0</strong>
+          </article>
+          <article class="metric-card">
+            <span>Habitaciones activas</span>
+            <strong id="metricRooms">0</strong>
+          </article>
+          <article class="metric-card">
+            <span>Paquetes activos</span>
+            <strong id="metricPackages">0</strong>
+          </article>
+          <article class="metric-card">
+            <span>Servicios activos</span>
+            <strong id="metricServices">0</strong>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel">
+            <div class="section-title">
+              <div>
+                <h2>Reservas globales</h2>
+                <p>Vista resumida de todas las reservas registradas.</p>
+              </div>
+              <a class="btn-secondary" href="./reservas.html">Abrir modulo</a>
+            </div>
+            <div id="reservationsTable"></div>
+          </article>
+
+          <aside class="panel">
+            <div class="section-title">
+              <div>
+                <h2>Accesos directos</h2>
+                <p>Navegacion estable para el rol administrador.</p>
+              </div>
+            </div>
+            <div class="surface-list">
+              <article class="list-card">
+                <div>
+                  <h4>Reservas</h4>
+                  <p>Crear, editar o cancelar reservas.</p>
+                </div>
+                <a class="btn-primary" href="./reservas.html">Abrir</a>
+              </article>
+              <article class="list-card">
+                <div>
+                  <h4>Clientes</h4>
+                  <p>Consultar clientes, habitaciones, paquetes y servicios.</p>
+                </div>
+                <a class="btn-secondary" href="./clientes.html">Abrir</a>
+              </article>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      getClientes,
+      getHabitaciones,
+      getPaquetes,
+      getReservas,
+      getServicios,
+      getSession
+    } from "../../js/api.js";
+    import { logout } from "../../js/authGuard.js";
+
+    const refs = {
+      userName: document.getElementById("userName"),
+      logoutBtn: document.getElementById("logoutBtn"),
+      metricReservations: document.getElementById("metricReservations"),
+      metricActive: document.getElementById("metricActive"),
+      metricClients: document.getElementById("metricClients"),
+      metricRooms: document.getElementById("metricRooms"),
+      metricPackages: document.getElementById("metricPackages"),
+      metricServices: document.getElementById("metricServices"),
+      recentReservations: document.getElementById("recentReservations"),
+      reservationsTable: document.getElementById("reservationsTable")
+    };
+
+    const session = getSession();
+
+    function formatCurrency(value) {
+      return Number(value || 0).toLocaleString("es-CO");
+    }
+
+    function statusName(reserva) {
+      return String(reserva?.estado?.nombre || "Sin estado");
+    }
+
+    function renderRecentReservations(reservas) {
+      const recientes = [...reservas]
+        .sort((a, b) => {
+          const dateA = new Date(`${a.fecha_inicio || "1970-01-01"}T${a.hora_entrada || "00:00"}`).getTime();
+          const dateB = new Date(`${b.fecha_inicio || "1970-01-01"}T${b.hora_entrada || "00:00"}`).getTime();
+
+          if (dateA !== dateB) {
+            return dateB - dateA;
+          }
+
+          return Number(b.id_reserva || 0) - Number(a.id_reserva || 0);
+        })
+        .slice(0, 5);
+
+      if (!recientes.length) {
+        refs.recentReservations.innerHTML = '<p class="empty-state">No hay reservas registradas.</p>';
+        return;
+      }
+
+      refs.recentReservations.innerHTML = recientes.map((reserva) => `
+        <article class="list-card">
+          <div>
+            <h4>Reserva #${reserva.id_reserva}</h4>
+            <p>${reserva.cliente?.nombreCompleto || reserva.nr_documento || "Sin cliente"} - ${reserva.habitacion?.nombre || "Sin habitacion"}</p>
+          </div>
+          <div class="list-card__meta">
+            <span class="badge">${statusName(reserva)}</span>
+            <strong>$${formatCurrency(reserva.total)}</strong>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderReservationsTable(reservas) {
+      if (!reservas.length) {
+        refs.reservationsTable.innerHTML = '<p class="empty-state">No hay reservas registradas.</p>';
+        return;
+      }
+
+      refs.reservationsTable.innerHTML = `
+        <div class="table-shell">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Habitacion</th>
+                <th>Fechas</th>
+                <th>Estado</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${reservas.map((reserva) => `
+                <tr>
+                  <td>#${reserva.id_reserva}</td>
+                  <td>${reserva.cliente?.nombreCompleto || reserva.nr_documento || "Sin cliente"}</td>
+                  <td>${reserva.habitacion?.nombre || "Sin habitacion"}</td>
+                  <td>${reserva.fecha_inicio || "--"} al ${reserva.fecha_fin || "--"}</td>
+                  <td><span class="badge">${statusName(reserva)}</span></td>
+                  <td>$${formatCurrency(reserva.total)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function init() {
+      refs.userName.textContent = `${session?.Nombre || ""} ${session?.Apellido || ""}`.trim() || "Administrador";
+      refs.logoutBtn.addEventListener("click", logout);
+
+      try {
+        const [clientes, habitaciones, paquetes, servicios, reservas] = await Promise.all([
+          getClientes(),
+          getHabitaciones(),
+          getPaquetes(),
+          getServicios(),
+          getReservas()
+        ]);
+
+        refs.metricReservations.textContent = String(reservas.length);
+        refs.metricActive.textContent = String(reservas.filter((reserva) => statusName(reserva).toLowerCase().includes("activ")).length);
+        refs.metricClients.textContent = String(clientes.filter((cliente) => Number(cliente.Estado) === 1).length);
+        refs.metricRooms.textContent = String(habitaciones.filter((habitacion) => Number(habitacion.Estado) === 1).length);
+        refs.metricPackages.textContent = String(paquetes.filter((paquete) => Number(paquete.Estado) === 1).length);
+        refs.metricServices.textContent = String(servicios.filter((servicio) => Number(servicio.Estado) === 1).length);
+
+        renderRecentReservations(reservas);
+        renderReservationsTable(reservas);
+      } catch (error) {
+        console.error("Error cargando dashboard admin:", error);
+        refs.recentReservations.innerHTML = '<p class="empty-state">No fue posible cargar la actividad reciente.</p>';
+        refs.reservationsTable.innerHTML = '<p class="empty-state">No fue posible cargar las reservas.</p>';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

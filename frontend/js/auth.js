@@ -1,12 +1,11 @@
 import { getSession, isClientSession, loginCliente, loginUsuario, requestPasswordRecovery, saveSession } from "./api.js";
+import { redirectToDashboardByRole } from "./authGuard.js";
 
-const DASHBOARD_URL = "../index.html";
-const CLIENT_DASHBOARD_URL = "../pages/cliente-dashboard.html";
 const REGISTRO_URL = "../pages/registro.html";
 
 const usuarioActual = getSession();
 if (usuarioActual) {
-  window.location.href = isClientSession(usuarioActual) ? CLIENT_DASHBOARD_URL : DASHBOARD_URL;
+  redirectToDashboardByRole(usuarioActual);
 }
 
 const form = document.getElementById("loginForm");
@@ -83,9 +82,9 @@ if (form) {
         ? await loginUsuario({ Username: valorUno, Email: valorUno, Password: valorDos })
         : await loginCliente({ Email: valorUno, NroDocumento: valorDos });
 
-      data.usuario.tipoAcceso = esAdmin ? "admin" : "cliente";
+      data.usuario.tipoAcceso = isClientSession(data.usuario) ? "cliente" : "admin";
       saveSession(data.usuario);
-      window.location.href = esAdmin ? DASHBOARD_URL : CLIENT_DASHBOARD_URL;
+      redirectToDashboardByRole(data.usuario);
     } catch (error) {
       console.error("Error en login:", error);
       errorBox.textContent = error.message;

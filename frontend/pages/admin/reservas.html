@@ -1,47 +1,75 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-auth-pending>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reservas | ViaLuna</title>
-  <link rel="stylesheet" href="../css/app.css">
+  <title>Reservas Admin | ViaLuna</title>
+  <link rel="stylesheet" href="../../css/app.css">
+  <script type="module">
+    import { protectPage } from "../../js/authGuard.js";
+    protectPage({ requiredRole: "admin" });
+  </script>
 </head>
-<body class="reservas-page">
+<body class="reservas-page" data-route-role="admin">
   <div class="page-shell">
     <div class="dashboard-shell">
       <aside class="sidebar">
-        <a class="brand sidebar__brand" href="../index.html">
-          <div class="brand__mark">VL</div>
-          <div class="brand__text">
-            <h1>Hospedaje ViaLuna</h1>
+        <a class="brand sidebar__brand" href="./dashboard.html">
+          <span class="brand__mark">VL</span>
+          <span class="brand__text">
+            <h1>ViaLuna</h1>
             <p>Panel administrativo</p>
-          </div>
+          </span>
         </a>
 
-        <nav class="sidebar__nav">
-          <a href="../index.html">Dashboard</a>
+        <nav class="sidebar__nav" aria-label="Menu admin">
+          <a href="./dashboard.html">Dashboard</a>
           <a class="active" href="./reservas.html">Reservas</a>
-          <a href="./reservas.html#habitaciones">Habitaciones</a>
-          <a data-requires-admin href="./usuarios.html">Usuarios</a>
-          <a data-requires-admin href="./roles-permisos/index.html">Roles y permisos</a>
-          <a data-requires-admin href="./configuracion.html">Configuracion</a>
+          <a href="./clientes.html">Clientes y catalogo</a>
+          <a href="./roles.html">Roles</a>
+          <a href="./permisos.html">Permisos</a>
         </nav>
 
         <div class="sidebar__footer">
-          <span class="user-chip" id="userName">Usuario</span>
-          <button type="button" class="btn-danger" id="logoutBtn">Cerrar sesion</button>
+          <span class="user-chip" id="userName">Administrador</span>
+          <button type="button" class="btn-ghost" id="logoutBtn">Cerrar sesion</button>
         </div>
       </aside>
 
       <main class="page-content dashboard-content reservations-content">
-        <section class="page-toolbar">
-          <button type="button" class="btn-ghost back-button" onclick="window.history.back()">Volver</button>
-        </section>
+        <section class="hero">
+          <article class="hero-card">
+            <span class="badge">Reservas admin</span>
+            <h2 id="formTitle">Nueva reserva</h2>
+            <p>Gestiona reservas, clientes y seleccion de catalogo sin salir del panel administrativo principal.</p>
+            <div class="hero-card__actions">
+              <a class="btn-primary" href="./dashboard.html">Volver al dashboard</a>
+              <a class="btn-secondary" href="./clientes.html">Ver clientes y catalogo</a>
+            </div>
+          </article>
 
-        <section class="page-hero">
-          <span class="badge">Reservas</span>
-          <h2 id="formTitle">Nueva reserva</h2>
-          <p>Crea, edita o cancela reservas. El subtotal no se muestra porque no existe como campo en la base de datos.</p>
+          <article class="panel">
+            <div class="section-title">
+              <div>
+                <h2>Flujo administrativo</h2>
+                <p>Esta vista conserva la navegacion del panel y concentra la operacion de reservas.</p>
+              </div>
+            </div>
+            <div class="surface-list">
+              <article class="list-card">
+                <div>
+                  <h4>Formulario central</h4>
+                  <p>Registra o actualiza reservas con cliente, fechas, estado y metodo de pago.</p>
+                </div>
+              </article>
+              <article class="list-card">
+                <div>
+                  <h4>Catalogo integrado</h4>
+                  <p>Selecciona habitaciones, paquetes y servicios sin cambiar de modulo visual.</p>
+                </div>
+              </article>
+            </div>
+          </article>
         </section>
 
         <div class="reservation-layout">
@@ -104,7 +132,7 @@
                 </div>
               </div>
 
-              <div class="panel catalog-panel" id="habitaciones">
+              <div class="panel catalog-panel">
                 <div class="section-title">
                   <div>
                     <h3>Habitaciones</h3>
@@ -117,7 +145,7 @@
                 </div>
               </div>
 
-              <div class="panel catalog-panel" id="paquetes">
+              <div class="panel catalog-panel">
                 <div class="section-title">
                   <div>
                     <h3>Paquetes</h3>
@@ -130,11 +158,11 @@
                 </div>
               </div>
 
-              <div class="panel catalog-panel" id="servicios">
+              <div class="panel catalog-panel">
                 <div class="section-title">
                   <div>
                     <h3>Servicios</h3>
-                    <p>Selecciona los servicios adicionales requeridos.</p>
+                    <p>Selecciona servicios adicionales requeridos.</p>
                   </div>
                 </div>
                 <div class="catalog-layout">
@@ -171,8 +199,8 @@
           <aside class="panel">
             <div class="section-title">
               <div>
-                <h2>Clientes activos</h2>
-                <p>Seleccion rapido para diligenciar el formulario.</p>
+                <h2>Clientes</h2>
+                <p>Seleccion rapida para diligenciar el formulario.</p>
               </div>
             </div>
             <div id="clientsTable"></div>
@@ -183,15 +211,16 @@
           <div class="section-title">
             <div>
               <h2>Reservas registradas</h2>
-              <p>Listado actualizado desde la base de datos.</p>
+              <p>Listado actualizado de todo el hospedaje.</p>
             </div>
           </div>
+          <p id="reservasFeedback" class="feedback" aria-live="polite"></p>
           <div id="reservasTable"></div>
         </section>
       </main>
     </div>
   </div>
 
-  <script type="module" src="../js/reservas.js"></script>
+  <script type="module" src="../../js/reservas.js"></script>
 </body>
 </html>

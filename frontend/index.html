@@ -3,141 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | ViaLuna</title>
+  <title>ViaLuna</title>
   <link rel="stylesheet" href="./css/app.css">
 </head>
 <body>
-  <div class="page-shell">
-    <div class="dashboard-shell">
-      <aside class="sidebar">
-        <a class="brand sidebar__brand" href="./index.html">
-          <div class="brand__mark">VL</div>
-          <div class="brand__text">
-            <h1>Hospedaje ViaLuna</h1>
-            <p>Panel administrativo</p>
-          </div>
-        </a>
+  <main class="auth-layout">
+    <section class="auth-card">
+      <div class="auth-card__header">
+        <span class="badge">ViaLuna</span>
+        <h2>Preparando acceso</h2>
+        <p>Redirigiendo al panel correspondiente según tu rol.</p>
+      </div>
+    </section>
+  </main>
 
-        <nav class="sidebar__nav">
-          <a class="active" href="./index.html">Dashboard</a>
-          <a href="./pages/reservas.html">Reservas</a>
-          <a href="./pages/reservas.html#habitaciones">Habitaciones</a>
-          <a href="./pages/usuarios.html">Usuarios</a>
-          <a data-requires-admin href="./pages/roles-permisos/index.html">Roles y permisos</a>
-          <a data-requires-admin href="./pages/configuracion.html">Configuracion</a>
-        </nav>
+  <script type="module">
+    import { getSession } from "./js/api.js";
+    import { LOGIN_URL } from "./js/authGuard.js";
 
-        <div class="sidebar__footer">
-          <span class="user-chip" id="usuarioNombre">Usuario</span>
-          <button type="button" class="btn-danger" id="logoutBtn">Cerrar sesion</button>
-        </div>
-      </aside>
+    /**
+     * Redirección segura por rol
+     */
+    function redirectByRole(session) {
+      const role = session?.tipoAcceso;
 
-      <main class="page-content dashboard-content">
-        <section class="hero">
-          <article class="hero-card">
-            <span class="badge">Gestion centralizada</span>
-            <h2>Administra el hospedaje desde un solo dashboard</h2>
-            <p>
-              El panel moderno concentra los indicadores clave, la actividad reciente y los accesos
-              directos a los modulos principales del sistema.
-            </p>
-            <div class="hero-card__actions">
-              <a class="btn-primary" href="./pages/reservas.html">Ver reservas</a>
-              <a class="btn-secondary" href="./pages/reservas.html#habitaciones">Ver habitaciones</a>
-              <a class="btn-ghost" href="./pages/configuracion.html">Ir a configuracion</a>
-            </div>
-          </article>
+      // 🔐 ADMIN
+      if (role === "admin") {
+        window.location.replace("./pages/admin/dashboard.html");
+        return;
+      }
 
-          <article class="panel">
-            <div class="section-title">
-              <div>
-                <h2>Actividad reciente</h2>
-                <p>Ultimas reservas registradas en la base de datos.</p>
-              </div>
-            </div>
-            <div id="reservasRecientes" class="list-stack"></div>
-          </article>
-        </section>
+      // 👤 CLIENTE
+      if (role === "cliente") {
+        window.location.replace("./pages/cliente/dashboard.html");
+        return;
+      }
 
-        <section class="metrics-grid">
-          <article class="metric-card">
-            <span>Reservas totales</span>
-            <strong id="resumenReservas">0</strong>
-          </article>
-          <article class="metric-card">
-            <span>Clientes activos</span>
-            <strong id="resumenClientes">0</strong>
-          </article>
-          <article class="metric-card">
-            <span>Habitaciones registradas</span>
-            <strong id="resumenHabitaciones">0</strong>
-          </article>
-          <article class="metric-card">
-            <span>Reservas activas</span>
-            <strong id="resumenActivas">0</strong>
-          </article>
-          <article class="metric-card">
-            <span>Paquetes disponibles</span>
-            <strong id="resumenPaquetes">0</strong>
-          </article>
-          <article class="metric-card">
-            <span>Servicios activos</span>
-            <strong id="resumenServicios">0</strong>
-          </article>
-        </section>
+      // 🚫 Sin sesión válida
+      window.location.replace(LOGIN_URL);
+    }
 
-        <section class="content-grid content-grid--single">
-          <article class="panel">
-            <div class="section-title">
-              <div>
-                <h2>Accesos rapidos</h2>
-                <p>Funciones principales ya organizadas.</p>
-              </div>
-            </div>
-            <div class="quick-links-grid">
-              <article class="list-card">
-                <div>
-                  <h4>Ver reservas</h4>
-                  <p>Consulta y administra las reservas registradas.</p>
-                </div>
-                <a class="btn-primary" href="./pages/reservas.html">Abrir</a>
-              </article>
-              <article class="list-card">
-                <div>
-                  <h4>Ver habitaciones</h4>
-                  <p>Accede directo al catalogo de habitaciones.</p>
-                </div>
-                <a class="btn-secondary" href="./pages/reservas.html#habitaciones">Abrir</a>
-              </article>
-              <article class="list-card">
-                <div>
-                  <h4>Ver paquetes</h4>
-                  <p>Revisa los paquetes adicionales disponibles.</p>
-                </div>
-                <a class="btn-secondary" href="./pages/reservas.html#paquetes">Abrir</a>
-              </article>
-              <article class="list-card">
-                <div>
-                  <h4>Ver servicios</h4>
-                  <p>Consulta los servicios complementarios del hospedaje.</p>
-                </div>
-                <a class="btn-secondary" href="./pages/reservas.html#servicios">Abrir</a>
-              </article>
-              <article class="list-card">
-                <div>
-                  <h4>Ir a configuracion</h4>
-                  <p>Administra preferencias y datos generales del sistema.</p>
-                </div>
-                <a class="btn-ghost" href="./pages/configuracion.html">Abrir</a>
-              </article>
-            </div>
-          </article>
-        </section>
-      </main>
-    </div>
-  </div>
+    /**
+     * Inicio seguro
+     */
+    function initRedirect() {
+      const session = getSession();
 
-  <script type="module" src="./js/app.js"></script>
+      if (!session) {
+        window.location.replace(LOGIN_URL);
+        return;
+      }
+
+      redirectByRole(session);
+    }
+
+    initRedirect();
+  </script>
 </body>
 </html>

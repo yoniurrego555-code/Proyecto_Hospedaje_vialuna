@@ -18,6 +18,18 @@
   --radius-sm: 12px;
 }
 
+html.theme-dark {
+  --bg: #081120;
+  --surface: rgba(10, 18, 34, 0.92);
+  --surface-strong: #0f1a2f;
+  --surface-alt: #13213a;
+  --text: #e7eefb;
+  --muted: #9fb0ca;
+  --line: rgba(148, 163, 184, 0.24);
+  --shadow: 0 18px 45px rgba(2, 6, 23, 0.4);
+  --shadow-soft: 0 10px 24px rgba(2, 6, 23, 0.32);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -34,6 +46,13 @@ body {
     radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 24%),
     radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.1), transparent 24%),
     linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+}
+
+html.theme-dark body {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.16), transparent 24%),
+    linear-gradient(180deg, #0b1424 0%, var(--bg) 100%);
 }
 
 a {
@@ -98,6 +117,10 @@ button:hover {
 
 .page-shell {
   min-height: 100vh;
+}
+
+html[data-auth-pending] body {
+  visibility: hidden;
 }
 
 .dashboard-shell {
@@ -279,6 +302,109 @@ button:hover {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   backdrop-filter: blur(12px);
+}
+
+.portal-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.portal-grid--two {
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--primary-dark);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.surface-list {
+  display: grid;
+  gap: 14px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.feature-card {
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(243, 248, 255, 0.88));
+  box-shadow: var(--shadow-soft);
+}
+
+.feature-card h3,
+.feature-card p {
+  margin: 0;
+}
+
+.feature-card p {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+.feature-card__actions {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stack-card {
+  display: grid;
+  gap: 16px;
+}
+
+.inline-stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.inline-stat:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.inline-stat strong {
+  color: var(--primary-dark);
+}
+
+.profile-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.profile-summary__item {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(243, 248, 255, 0.9));
+}
+
+.profile-summary__item span,
+.profile-summary__item strong {
+  display: block;
+}
+
+.profile-summary__item span {
+  color: var(--muted);
+  margin-bottom: 6px;
 }
 
 .hero-card {
@@ -922,7 +1048,8 @@ button:hover {
   .content-grid,
   .reservation-layout,
   .catalog-layout,
-  .management-grid {
+  .management-grid,
+  .portal-grid--two {
     grid-template-columns: 1fr;
   }
 
@@ -934,7 +1061,8 @@ button:hover {
   .selection-grid,
   .info-grid,
   .quick-links-grid,
-  .summary-cards-grid {
+  .summary-cards-grid,
+  .feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -984,9 +1112,14 @@ button:hover {
   .info-grid,
   .quick-links-grid,
   .summary-cards-grid,
+  .feature-grid,
   .form-grid,
   .inline-grid,
   .segmented-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-summary {
     grid-template-columns: 1fr;
   }
 

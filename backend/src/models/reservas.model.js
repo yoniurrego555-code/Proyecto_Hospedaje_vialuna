@@ -515,6 +515,26 @@ async function obtenerPorId(id) {
   return reservas[0] || null;
 }
 
+async function obtenerPorUsuario(userId) {
+  const normalizedUserId = String(userId || "").trim();
+
+  if (!normalizedUserId) {
+    return [];
+  }
+
+  const rows = await obtenerReservasBase(
+    db,
+    `
+      WHERE CAST(r.id_cliente AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci = ?
+         OR CAST(r.nr_documento AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci = ?
+         OR CAST(c.NroDocumento AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci = ?
+    `,
+    [normalizedUserId, normalizedUserId, normalizedUserId]
+  );
+
+  return hidratarReservas(db, rows);
+}
+
 async function crear(data) {
   const connection = await db.getConnection();
 
@@ -660,6 +680,7 @@ async function eliminar(id) {
 module.exports = {
   obtener,
   obtenerPorId,
+  obtenerPorUsuario,
   crear,
   actualizar,
   eliminar

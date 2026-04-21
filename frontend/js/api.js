@@ -1,6 +1,9 @@
 export const API_URL = "http://localhost:3000/api";
 export const SESSION_KEY = "vialuna_usuario";
 
+/* =========================
+   REQUEST BASE
+========================= */
 async function request(path, options = {}) {
   const response = await fetch(`${API_URL}${path}`, {
     headers: {
@@ -15,43 +18,87 @@ async function request(path, options = {}) {
 
   try {
     data = text ? JSON.parse(text) : null;
-  } catch (error) {
+  } catch {
     data = null;
   }
 
   if (!response.ok) {
-    throw new Error(data?.error || data?.mensaje || "No fue posible completar la solicitud");
+    throw new Error(data?.error || data?.mensaje || "Error en la solicitud");
   }
 
   return data;
 }
 
+/* =========================
+   SESIÓN
+========================= */
 export function saveSession(usuario) {
   localStorage.setItem(SESSION_KEY, JSON.stringify(usuario));
 }
 
 export function getSession() {
-  const raw = localStorage.getItem(SESSION_KEY);
-  return raw ? JSON.parse(raw) : null;
-}
-
-export function getSessionRoleName(session = getSession()) {
-  return String(session?.NombreRol || session?.rol || "").trim().toLowerCase();
-}
-
-export function isAdminSession(session = getSession()) {
-  return getSessionRoleName(session).includes("administrador");
-}
-
-export function isClientSession(session = getSession()) {
-  return getSessionRoleName(session).includes("cliente");
+  try {
+    return JSON.parse(localStorage.getItem(SESSION_KEY));
+  } catch {
+    return null;
+  }
 }
 
 export function clearSession() {
   localStorage.removeItem(SESSION_KEY);
-  localStorage.removeItem("usuario");
 }
 
+/* =========================
+   ROLES (CORREGIDO)
+   - SIN FALLBACKS
+   - SIN STRINGS
+========================= */
+export function isAdminSession(session = getSession()) {
+  return Number(session?.IDRol) === 1;
+}
+
+export function isClientSession(session = getSession()) {
+  return Number(session?.IDRol) === 2;
+}
+
+/* =========================
+   VALIDACIÓN SIMPLE DE IDENTIDAD
+   (SIN LÓGICA COMPLEJA)
+========================= */
+function normalize(value) {
+  return String(value ?? "").trim();
+}
+
+export function reservationBelongsToSession(reserva, session = getSession()) {
+  if (!reserva || !session) return false;
+
+  return (
+    normalize(reserva.id_cliente) === normalize(session.id_cliente)
+  );
+}
+
+export function clienteBelongsToSession(cliente, session = getSession()) {
+  if (!cliente || !session) return false;
+
+  return (
+    normalize(cliente.IDCliente) === normalize(session.id_cliente)
+  );
+}
+
+/* =========================
+   FILTROS BACKEND
+========================= */
+export function getReservationOwnershipFilters(session = getSession()) {
+  if (!session) return {};
+
+  return {
+    id_cliente: session.id_cliente
+  };
+}
+
+/* =========================
+   LOGIN
+========================= */
 export function loginCliente(payload) {
   return request("/clientes/login", {
     method: "POST",
@@ -66,6 +113,9 @@ export function loginUsuario(payload) {
   });
 }
 
+/* =========================
+   PASSWORD
+========================= */
 export function requestPasswordRecovery(payload) {
   return request("/password-recovery/request", {
     method: "POST",
@@ -73,155 +123,54 @@ export function requestPasswordRecovery(payload) {
   });
 }
 
-export function resetPassword(payload) {
-  return request("/password-recovery/reset", {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-}
-
+/* =========================
+   CLIENTES
+========================= */
 export function getClientes() {
   return request("/clientes");
 }
 
-export function createCliente(payload) {
-  return request("/clientes", {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function updateCliente(id, payload) {
-  return request(`/clientes/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload)
-  });
-}
-
+/* =========================
+   HABITACIONES
+========================= */
 export function getHabitaciones() {
   return request("/habitacion");
 }
 
+/* =========================
+   SERVICIOS
+========================= */
 export function getServicios() {
   return request("/servicios");
 }
 
+/* =========================
+   PAQUETES
+========================= */
 export function getPaquetes() {
   return request("/paquetes");
 }
 
+/* =========================
+   METODOS DE PAGO
+========================= */
 export function getMetodosPago() {
   return request("/metodopago");
 }
 
+/* =========================
+   ESTADOS RESERVA
+========================= */
 export function getEstadosReserva() {
   return request("/estadosreserva");
 }
 
-export function getReservas() {
-  return request("/reservas");
-}
-
-export function getRoles() {
-  return request("/roles");
-}
-
-export function createRol(payload) {
-  return request("/roles", {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function updateRol(id, payload) {
-  return request(`/roles/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function deleteRol(id) {
-  return request(`/roles/${id}`, {
-    method: "DELETE"
-  });
-}
-
-export function getPermisos() {
-  return request("/permisos");
-}
-
-export function createPermiso(payload) {
-  return request("/permisos", {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function updatePermiso(id, payload) {
-  return request(`/permisos/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function deletePermiso(id) {
-  return request(`/permisos/${id}`, {
-    method: "DELETE"
-  });
-}
-
-export function getRolesPermisos() {
-  return request("/rolespermisos");
-}
-
-export function seedRolesPermisos() {
-  return request("/rolespermisos/seed-defaults", {
-    method: "POST"
-  });
-}
-
-export function createRolPermiso(payload) {
-  return request("/rolespermisos", {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function updateRolPermiso(id, payload) {
-  return request(`/rolespermisos/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function deleteRolPermiso(id) {
-  return request(`/rolespermisos/${id}`, {
-    method: "DELETE"
-  });
-}
-
-export function getUsuarios() {
-  return request("/usuarios");
-}
-
-export function createUsuario(payload) {
-  return request("/usuarios", {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function updateUsuario(id, payload) {
-  return request(`/usuarios/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload)
-  });
-}
-
-export function deleteUsuario(id) {
-  return request(`/usuarios/${id}`, {
-    method: "DELETE"
-  });
+/* =========================
+   RESERVAS
+========================= */
+export function getReservas(filters = {}) {
+  const query = new URLSearchParams(filters).toString();
+  return request(`/reservas${query ? `?${query}` : ""}`);
 }
 
 export function crearReserva(payload) {
@@ -242,4 +191,19 @@ export function cancelarReserva(id) {
   return request(`/reservas/${id}`, {
     method: "DELETE"
   });
+}
+
+/* =========================
+  ROLES Y PERMISOS
+========================= */
+export function getRoles() {
+  return request("/roles");
+}
+
+export function getPermisos() {
+  return request("/permisos");
+}
+
+export function getRolesPermisos() {
+  return request("/rolespermisos");
 }

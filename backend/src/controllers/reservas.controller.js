@@ -9,7 +9,7 @@ function handleError(res, error, fallbackMessage) {
 
 exports.listar = async (req, res) => {
   try {
-    const reservas = await service.listar();
+    const reservas = await service.listar(req.query);
     res.json(reservas);
   } catch (error) {
     handleError(res, error, "Error al listar reservas");
@@ -27,6 +27,15 @@ exports.obtener = async (req, res) => {
     res.json(reserva);
   } catch (error) {
     handleError(res, error, "Error al obtener la reserva");
+  }
+};
+
+exports.obtenerPorUsuario = async (req, res) => {
+  try {
+    const reservas = await service.obtenerPorUsuario(req.params.id);
+    res.json(reservas);
+  } catch (error) {
+    handleError(res, error, "Error al obtener las reservas del usuario");
   }
 };
 
