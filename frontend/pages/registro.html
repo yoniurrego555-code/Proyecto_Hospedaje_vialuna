@@ -4,113 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro | ViaLuna</title>
-  <link rel="stylesheet" href="../css/app.css">
+  <link rel="stylesheet" href="../styles/login.css">
 </head>
 <body>
-  <main class="auth-layout">
-    <section class="auth-card auth-card--wide">
-      <div class="page-toolbar">
-        <button type="button" class="btn-ghost back-button" onclick="window.history.back()">Volver</button>
-      </div>
-
-      <div class="auth-card__header">
-        <span class="badge">Registro de clientes</span>
-        <h2>Crea tu cuenta para reservar</h2>
-        <p>Este formulario registra clientes para reservas y acceso como cliente.</p>
-      </div>
-
-      <div class="context-note">
-        <strong>Importante:</strong> aqui se crean clientes. Los administradores y usuarios internos se crean desde el backend.
+  <main class="auth-shell">
+    <section class="auth-panel auth-panel--wide">
+      <div class="auth-brand">
+        <span class="auth-chip">Registro de clientes</span>
+        <h1>Crear cuenta</h1>
+        <p>Completa tus datos para reservar y acceder al portal de cliente.</p>
       </div>
 
       <form id="registroForm" class="auth-form">
-        <div class="form-grid">
-          <div class="field-group">
-            <label for="documento">Documento</label>
-            <input type="text" id="documento" required>
-          </div>
-
-          <div class="field-group">
-            <label for="telefono">Telefono</label>
-            <input type="tel" id="telefono" required>
-          </div>
-
-          <div class="field-group">
+        <div class="auth-grid">
+          <div class="auth-field">
             <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" required>
+            <div class="auth-input">
+              <span class="auth-icon">N</span>
+              <input type="text" id="nombre" required>
+            </div>
           </div>
 
-          <div class="field-group">
+          <div class="auth-field">
             <label for="apellido">Apellido</label>
-            <input type="text" id="apellido" required>
+            <div class="auth-input">
+              <span class="auth-icon">A</span>
+              <input type="text" id="apellido" required>
+            </div>
           </div>
 
-          <div class="field-group full">
-            <label for="direccion">Direccion</label>
-            <input type="text" id="direccion" required>
+          <div class="auth-field">
+            <label for="documento">Documento</label>
+            <div class="auth-input">
+              <span class="auth-icon">#</span>
+              <input type="text" id="documento" required>
+            </div>
           </div>
 
-          <div class="field-group full">
-            <label for="email">Correo electronico</label>
-            <input type="email" id="email" required>
+          <div class="auth-field">
+            <label for="telefono">Teléfono</label>
+            <div class="auth-input">
+              <span class="auth-icon">T</span>
+              <input type="tel" id="telefono" required>
+            </div>
+          </div>
+
+          <div class="auth-field auth-field--full">
+            <label for="direccion">Dirección</label>
+            <div class="auth-input">
+              <span class="auth-icon">D</span>
+              <input type="text" id="direccion">
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="email">Correo electrónico</label>
+            <div class="auth-input">
+              <span class="auth-icon">@</span>
+              <input type="email" id="email" autocomplete="email" required>
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="password">Contraseña</label>
+            <div class="auth-input">
+              <span class="auth-icon">*</span>
+              <input type="password" id="password" minlength="6" autocomplete="new-password" required>
+              <button type="button" id="toggleRegisterPassword">Mostrar</button>
+            </div>
           </div>
         </div>
 
         <p id="registroFeedback" class="feedback" aria-live="polite"></p>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Guardar registro</button>
-          <a class="btn-secondary" href="../public/login.html">Volver al login</a>
+        <div class="auth-actions">
+          <button type="submit" class="btn btn-primary">Registrarse</button>
+          <a class="btn btn-secondary" href="../public/login.html">Volver al login</a>
         </div>
       </form>
     </section>
   </main>
 
-  <script type="module">
-    import { createCliente, getSession, isClientSession } from "../js/api.js";
-    import { redirectToDashboardByRole } from "../js/authGuard.js";
-
-    const LOGIN_URL = "../public/login.html";
-    const form = document.getElementById("registroForm");
-    const feedback = document.getElementById("registroFeedback");
-    const session = getSession();
-
-    if (session && isClientSession(session)) {
-      redirectToDashboardByRole(session);
-    }
-
-    if (form) {
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        feedback.textContent = "";
-        feedback.className = "feedback";
-
-        const data = {
-          NroDocumento: document.getElementById("documento").value.trim(),
-          Nombre: document.getElementById("nombre").value.trim(),
-          Apellido: document.getElementById("apellido").value.trim(),
-          Direccion: document.getElementById("direccion").value.trim(),
-          Email: document.getElementById("email").value.trim(),
-          Telefono: document.getElementById("telefono").value.trim(),
-          Estado: 1,
-          IDRol: 2
-        };
-
-        try {
-          await createCliente(data);
-          feedback.textContent = "Registro exitoso. Ya puedes iniciar sesion.";
-          feedback.classList.add("success");
-          form.reset();
-          window.setTimeout(() => {
-            window.location.href = LOGIN_URL;
-          }, 1200);
-        } catch (error) {
-          console.error("Error en registro:", error);
-          feedback.textContent = error.message;
-          feedback.classList.add("error");
-        }
-      });
-    }
-  </script>
+  <script type="module" src="../dashboard/core/auth.js"></script>
 </body>
 </html>

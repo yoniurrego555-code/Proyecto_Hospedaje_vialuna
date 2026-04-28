@@ -1,7 +1,7 @@
 import { clearSession, getSession, isAdminSession, isClientSession } from "./api.js";
 
 function getFrontendBaseUrl() {
-  return new URL("../", import.meta.url);
+  return new URL("../../", import.meta.url);
 }
 
 export function getAppUrl(path = "") {
@@ -88,7 +88,7 @@ export function redirectToDashboardByRole(session = getSession(), options = {}) 
 export function protectPage({ requiredRole = null, deniedMessage = "" } = {}) {
   const session = getSession();
 
-  if (!session) {
+  if (!session || !session.token) {
     safeRedirect(LOGIN_URL);
     return null;
   }

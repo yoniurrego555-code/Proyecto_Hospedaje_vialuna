@@ -4,69 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | ViaLuna</title>
-  <link rel="stylesheet" href="../css/app.css">
+  <link rel="stylesheet" href="../styles/login.css">
 </head>
 <body>
-  <main class="auth-layout">
-    <section class="auth-card">
-      <div class="auth-card__header">
-        <span class="badge">Acceso al sistema</span>
-        <h2>Inicia sesion en ViaLuna</h2>
-        <p id="loginHelp">Selecciona si vas a ingresar como cliente o administrador.</p>
+  <main class="auth-shell">
+    <section class="auth-panel">
+      <div class="auth-brand">
+        <span class="auth-chip">ViaLuna</span>
+        <h1>Iniciar sesion</h1>
+        <p>Accede con tu correo y contrasena para entrar como cliente o administrador.</p>
       </div>
 
       <form id="loginForm" class="auth-form">
-        <div class="field-group">
-          <label for="tipoAcceso">Tipo de acceso</label>
-          <select id="tipoAcceso">
-            <option value="cliente">Cliente</option>
-            <option value="admin">Administrador</option>
-          </select>
+        <div class="auth-field">
+          <label for="email">Correo electronico</label>
+          <div class="auth-input">
+            <span class="auth-icon">@</span>
+            <input type="email" id="email" placeholder="correo@ejemplo.com" autocomplete="email" required>
+          </div>
         </div>
 
-        <div class="field-group">
-          <label for="email" id="fieldOneLabel">Correo electronico</label>
-          <input type="email" id="email" placeholder="cliente@correo.com" required>
-        </div>
-
-        <div class="field-group">
-          <label for="documento" id="fieldTwoLabel">Numero de documento</label>
-          <input type="text" id="documento" placeholder="Ingresa tu documento" required>
+        <div class="auth-field">
+          <label for="password">Contrasena</label>
+          <div class="auth-input">
+            <span class="auth-icon">*</span>
+            <input type="password" id="password" placeholder="Ingresa tu contrasena" autocomplete="current-password" required>
+            <button type="button" id="togglePassword">Mostrar</button>
+          </div>
         </div>
 
         <p id="loginError" class="feedback" aria-live="polite"></p>
 
-        <button type="button" class="btn-ghost" id="forgotPasswordBtn">
-          Recuperar contrasena
-        </button>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Ingresar</button>
-          <button type="button" class="btn-secondary" onclick="irRegistro()">Registrarme</button>
-        </div>
-      </form>
-
-      <form id="forgotPasswordForm" class="auth-form" hidden>
-        <div class="auth-card__header">
-          <h3>Recuperar contrasena</h3>
-          <p>Ingresa el Gmail registrado del administrador para recibir el enlace de recuperacion.</p>
+        <div class="auth-meta">
+          <label class="auth-check" for="rememberMe">
+            <input type="checkbox" id="rememberMe">
+            <span>Recordarme</span>
+          </label>
         </div>
 
-        <div class="field-group">
-          <label for="recoveryEmail">Gmail registrado</label>
-          <input type="email" id="recoveryEmail" placeholder="admin@gmail.com">
+        <div class="auth-actions">
+          <button type="submit" class="btn btn-primary">Iniciar sesion</button>
+          <a class="btn btn-secondary" href="../pages/registro.html">Registrarse</a>
         </div>
 
-        <p id="forgotPasswordFeedback" class="feedback" aria-live="polite"></p>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Enviar enlace</button>
-          <button type="button" class="btn-secondary" id="cancelRecoveryBtn">Cancelar</button>
+        <div class="auth-links">
+          <a class="btn btn-link" href="./reset-password.html">Recuperar contrasena</a>
         </div>
       </form>
     </section>
   </main>
 
-  <script type="module" src="../js/auth.js"></script>
+  <script type="module" src="../dashboard/core/auth.js"></script>
 </body>
 </html>

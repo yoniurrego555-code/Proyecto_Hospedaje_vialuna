@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Cliente | ViaLuna</title>
-  <link rel="stylesheet" href="../../css/app.css">
+  <link rel="stylesheet" href="../../styles/app.css">
   <script type="module">
-    import { protectPage } from "../../js/authGuard.js";
+    import { protectPage } from "../../dashboard/core/authGuard.js";
     protectPage({ requiredRole: "cliente" });
   </script>
 </head>
@@ -139,8 +139,8 @@
       getServicios,
       getSession,
       reservationBelongsToSession
-    } from "../../js/api.js";
-    import { getAppUrl, logout } from "../../js/authGuard.js";
+    } from "../../dashboard/core/api.js";
+    import { getAppUrl, logout } from "../../dashboard/core/authGuard.js";
 
     const refs = {
       userName: document.getElementById("userName"),
@@ -177,7 +177,7 @@
     }
 
     function fullName(person) {
-      return `${person?.Nombre || ""} ${person?.Apellido || ""}`.trim();
+      return person?.nombre || `${person?.Nombre || ""} ${person?.Apellido || ""}`.trim();
     }
 
     function statusName(reserva) {

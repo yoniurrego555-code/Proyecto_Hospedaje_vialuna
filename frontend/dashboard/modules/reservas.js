@@ -15,8 +15,8 @@ import {
   isAdminSession,
   reservationBelongsToSession,
   sessionMatchesValue
-} from "./api.js";
-import { consumeAccessDeniedMessage, getAppUrl, logout } from "./authGuard.js";
+} from "../core/api.js";
+import { consumeAccessDeniedMessage, getAppUrl, logout } from "../core/authGuard.js";
 
 const TODAY = new Date().toISOString().split("T")[0];
 const ESTADO_ACTIVA = 1;
