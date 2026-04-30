@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Via Luna | Eliminar cuenta</title>
+    <link rel="stylesheet" href="../css/public-theme.css">
+</head>
+<body>
+    <main class="auth-shell">
+        <section class="split-card">
+            <aside class="side-panel">
+                <div>
+                    <div class="badge">Cuenta</div>
+                    <h1>Elimina tu cuenta de forma clara y segura</h1>
+                    <p>
+                        Esta opcion es parte del mismo flujo publico. Primero validamos tus datos
+                        y despues te pedimos una confirmacion final antes de eliminar la cuenta.
+                    </p>
+                </div>
+
+                <ul>
+                    <li>Mantiene el mismo diseno de la portada, login y reserva.</li>
+                    <li>Verifica correo y contrasena antes de eliminar.</li>
+                    <li>Al terminar, se cierra la sesion local del navegador.</li>
+                </ul>
+
+                <div class="side-actions">
+                    <a class="button light" href="login.html">Volver a login</a>
+                    <a class="button ghost" href="index.html">Ir al inicio</a>
+                </div>
+            </aside>
+
+            <section class="form-panel">
+                <h2>Eliminar cuenta</h2>
+                <p>Confirma tus credenciales para solicitar la eliminacion definitiva.</p>
+
+                <div class="form-card">
+                    <form id="deleteAccountForm">
+                        <div class="field">
+                            <label for="email">Correo electronico</label>
+                            <input id="email" name="email" type="email" placeholder="tucorreo@ejemplo.com" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="password">Contrasena</label>
+                            <input id="password" name="password" type="password" placeholder="Ingresa tu contrasena actual" required>
+                        </div>
+
+                        <p class="helper">Solo elimina tu cuenta si ya no deseas conservar reservas ni historial asociado en este sistema.</p>
+
+                        <button class="button primary" id="submitButton" type="submit">Eliminar cuenta</button>
+                    </form>
+
+                    <div id="message" class="message"></div>
+
+                    <div class="support-links">
+                        <a href="login.html">Iniciar sesion</a>
+                        <a href="registro.html">Crear cuenta</a>
+                        <a href="recuperar.html">Recuperar cuenta</a>
+                        <a href="index.html">Volver al inicio</a>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script type="module">
+        import { apiUrl, getConnectionErrorMessage } from '../js/shared/api-config.js';
+
+        const storedUser = JSON.parse(localStorage.getItem('usuario') || 'null');
+        const form = document.getElementById('deleteAccountForm');
+        const message = document.getElementById('message');
+        const submitButton = document.getElementById('submitButton');
+
+        if (storedUser?.email) {
+            form.email.value = storedUser.email;
+        }
+
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = `message show ${type}`;
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            message.className = 'message';
+            message.textContent = '';
+            submitButton.disabled = true;
+            submitButton.textContent = 'Validando...';
+
+            try {
+                let loginResponse;
+
+                try {
+                    loginResponse = await fetch(apiUrl('usuarios/login'), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: form.email.value.trim(),
+                            password: form.password.value
+                        })
+                    });
+                } catch (error) {
+                    if (error instanceof TypeError) {
+                        throw new Error(getConnectionErrorMessage('la API de usuarios'));
+                    }
+                    throw error;
+                }
+
+                const loginData = await loginResponse.json().catch(() => ({}));
+
+                if (!loginResponse.ok || !loginData.ok || !loginData.user?.id) {
+                    throw new Error(loginData.mensaje || 'No pudimos validar tu cuenta con esos datos.');
+                }
+
+                const confirmed = window.confirm(
+                    `Estas seguro de eliminar la cuenta ${loginData.user.nombre || form.email.value.trim()}?\n\nEsta accion no se puede deshacer.`
+                );
+
+                if (!confirmed) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Eliminar cuenta';
+                    return;
+                }
+
+                submitButton.textContent = 'Eliminando...';
+
+                let deleteResponse;
+
+                try {
+                    deleteResponse = await fetch(apiUrl(`usuarios/${loginData.user.id}`), {
+                        method: 'DELETE'
+                    });
+                } catch (error) {
+                    if (error instanceof TypeError) {
+                        throw new Error(getConnectionErrorMessage('la API de usuarios'));
+                    }
+                    throw error;
+                }
+
+                const deleteData = await deleteResponse.json().catch(() => ({}));
+
+                if (!deleteResponse.ok || !deleteData.ok) {
+                    throw new Error(deleteData.mensaje || 'No fue posible eliminar la cuenta.');
+                }
+
+                localStorage.removeItem('token');
+                localStorage.removeItem('usuario');
+                showMessage('Tu cuenta fue eliminada correctamente. Te llevaremos al inicio.', 'success');
+                form.reset();
+
+                window.setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1200);
+            } catch (error) {
+                showMessage(error.message || 'Ocurrio un error al eliminar la cuenta.', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Eliminar cuenta';
+            }
+        });
+    </script>
+</body>
+</html>

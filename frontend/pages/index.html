@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Via Luna | Hospedaje Boutique</title>
+    <link rel="stylesheet" href="../css/public-theme.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="page-shell topbar-inner">
+            <a class="brand" href="index.html">
+                <div class="brand-mark">VL</div>
+                <div class="brand-text">
+                    <strong>Via Luna</strong>
+                    <small>Hospedaje boutique para una estancia serena</small>
+                </div>
+            </a>
+
+            <nav class="nav" id="mainNav" aria-label="Navegacion principal">
+                <a href="#habitaciones">Habitaciones</a>
+                <a href="#paquetes">Paquetes</a>
+                <a href="#servicios">Servicios</a>
+                <a href="registro.html?redirect=reservar.html">Crear cuenta</a>
+                <a class="nav-cta" href="login.html?redirect=reservar.html">Iniciar sesion</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero">
+            <div class="hero-grid">
+                <article class="hero-copy">
+                    <div class="eyebrow">Experiencia de hospedaje</div>
+                    <h1>Una estancia real <em>con reserva guiada y segura</em></h1>
+                    <p>
+                        Via Luna presenta un hospedaje rural con catalogo real de habitaciones, paquetes y servicios.
+                        Puedes ver el detalle de cada opcion y, cuando decidas reservar, iniciar sesion desde la parte superior.
+                    </p>
+
+                    <div class="auth-banner" id="clientBanner" style="display:none; margin-bottom:18px;"></div>
+
+                    <div class="hero-actions">
+                        <a class="button primary" href="reservar.html">Ver disponibilidad</a>
+                        <a class="button secondary" href="registro.html?redirect=reservar.html">Crear cuenta</a>
+                        <a class="button secondary" href="#habitaciones">Ver catalogo</a>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="summary-card">
+                            <span>Reserva</span>
+                            <strong>1 flujo</strong>
+                            <p>Login, seleccion, detalle y confirmacion en una sola experiencia.</p>
+                        </div>
+                        <div class="summary-card">
+                            <span>Catalogo</span>
+                            <strong>Real</strong>
+                            <p>La landing carga datos actuales de habitaciones, paquetes y servicios.</p>
+                        </div>
+                        <div class="summary-card">
+                            <span>Control</span>
+                            <strong>Seguro</strong>
+                            <p>La reserva se confirma solo despues de iniciar sesion.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="habitaciones" class="block">
+            <div class="section-head">
+                <div>
+                    <div class="section-tag">Habitaciones</div>
+                    <h2 class="section-title">Catalogo real del hospedaje rural</h2>
+                    <p class="section-copy">Aqui se muestran las habitaciones reales registradas en base de datos, incluyendo su estado actual.</p>
+                </div>
+                <a class="button secondary" href="reservar.html">Ver catalogo completo</a>
+            </div>
+
+            <div id="roomsGrid" class="room-grid">
+                <div class="loading-card">Cargando habitaciones...</div>
+            </div>
+        </section>
+
+        <section id="paquetes" class="block">
+            <div class="section-head">
+                <div>
+                    <div class="section-tag">Paquetes</div>
+                    <h2 class="section-title">Paquetes para complementar tu estancia</h2>
+                    <p class="section-copy">Paquetes reales del sistema para complementar tu experiencia rural.</p>
+                </div>
+                <a class="button secondary" href="reservar.html">Ver paquetes</a>
+            </div>
+
+            <div id="packagesGrid" class="package-grid">
+                <div class="loading-card">Cargando paquetes...</div>
+            </div>
+        </section>
+
+        <section id="servicios" class="block">
+            <div class="section-head">
+                <div>
+                    <div class="section-tag">Servicios</div>
+                    <h2 class="section-title">Servicios disponibles</h2>
+                    <p class="section-copy">Servicios rurales como cabalgata, spa, recorrido y desayuno especial se cargan desde la base de datos.</p>
+                </div>
+                <a class="button secondary" href="reservar.html">Ver servicios</a>
+            </div>
+
+            <div id="servicesGrid" class="service-grid">
+                <div class="loading-card">Cargando servicios...</div>
+            </div>
+        </section>
+
+        <section class="block">
+            <article class="cta-panel">
+                <div class="section-tag">Cuenta y acceso</div>
+                <h2>Orden mejorado para el usuario</h2>
+                <p>
+                    Primero creas cuenta o inicias sesion. Despues eliges habitacion, paquetes y servicios.
+                    Finalmente revisas el detalle, el valor total y aceptas la confirmacion antes de reservar.
+                </p>
+
+                <div class="link-grid">
+                    <a href="reservar.html">
+                        <strong>Explorar reserva</strong>
+                        <small>Revisa habitaciones, paquetes y servicios antes de confirmar.</small>
+                    </a>
+                    <a href="registro.html?redirect=reservar.html">
+                        <strong>Crear cuenta</strong>
+                        <small>Registrate y entra al flujo de reserva.</small>
+                    </a>
+                    <a href="recuperar.html">
+                        <strong>Recuperar cuenta</strong>
+                        <small>Solicita apoyo si no recuerdas tu acceso.</small>
+                    </a>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <footer class="page-shell">
+        <div class="footer-box">
+            <p>La landing ya no inventa catalogos: ahora muestra informacion real y ordena mejor el acceso al proceso de reserva.</p>
+            <a class="button secondary" href="reservar.html">Empezar ahora</a>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { apiUrl, getConnectionErrorMessage } from '../js/shared/api-config.js';
+
+        const roomsGrid = document.getElementById('roomsGrid');
+        const packagesGrid = document.getElementById('packagesGrid');
+        const servicesGrid = document.getElementById('servicesGrid');
+        const mainNav = document.getElementById('mainNav');
+        const clientBanner = document.getElementById('clientBanner');
+        const storedUser = JSON.parse(localStorage.getItem('usuario') || 'null');
+        const token = localStorage.getItem('token');
+
+        const roomBackgrounds = [
+            'linear-gradient(145deg, #d4eadf 0%, #8ab8a2 48%, #356b59 100%)',
+            'linear-gradient(145deg, #edf8f1 0%, #a4cbb8 44%, #487867 100%)',
+            'linear-gradient(145deg, #bdd9ca 0%, #78a88f 44%, #244f43 100%)'
+        ];
+
+        function formatMoney(value) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                maximumFractionDigits: 0
+            }).format(Number(value || 0));
+        }
+
+        function slugify(text) {
+            return String(text || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        }
+
+        function reserveLink(params) {
+            return `reservar.html?${params.toString()}`;
+        }
+
+        function setClientView() {
+            if (!token || !storedUser) {
+                clientBanner.style.display = 'none';
+                return;
+            }
+
+            const firstName = String(storedUser.nombre || 'Cliente').trim().split(' ')[0];
+            clientBanner.style.display = 'block';
+            clientBanner.innerHTML = `
+                <strong>Sesion activa para ${firstName}</strong>
+                <p class="auth-note">Tu vista de cliente ya esta activa. Puedes seguir con tu reserva y usaremos el correo ${storedUser.email || 'registrado'} como contacto principal.</p>
+            `;
+
+            mainNav.innerHTML = `
+                <a href="#habitaciones">Habitaciones</a>
+                <a href="#paquetes">Paquetes</a>
+                <a href="#servicios">Servicios</a>
+                <a href="reservar.html">Mi reserva</a>
+                <a href="eliminar-cuenta.html">Mi cuenta</a>
+                <button class="button secondary" id="logoutButton" type="button">Cerrar sesion</button>
+            `;
+
+            document.getElementById('logoutButton').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('usuario');
+                window.location.reload();
+            });
+        }
+
+        function renderRooms(items) {
+            if (!items.length) {
+                roomsGrid.innerHTML = '<div class="loading-card">No hay habitaciones disponibles en este momento.</div>';
+                return;
+            }
+
+            roomsGrid.innerHTML = items.map((item, index) => {
+                const params = new URLSearchParams({ origen: 'habitaciones', habitacion: slugify(item.nombre) });
+                return `
+                    <article class="room-card">
+                        <div class="card-media" style="background:${roomBackgrounds[index % roomBackgrounds.length]};"></div>
+                        <div class="card-tag">${item.estado}</div>
+                        <h3>${item.nombre}</h3>
+                        <p>${item.descripcion || 'Habitacion disponible para reservar.'}</p>
+                        <div class="price-line">
+                            <span>Capacidad para ${item.capacidad} persona(s)</span>
+                            <strong>${formatMoney(item.precio)}</strong>
+                        </div>
+                        <a class="button primary" href="${reserveLink(params)}">Ver detalle</a>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function renderPackages(items) {
+            if (!items.length) {
+                packagesGrid.innerHTML = '<div class="loading-card">No hay paquetes disponibles por ahora.</div>';
+                return;
+            }
+
+            packagesGrid.innerHTML = items.map((item) => {
+                const params = new URLSearchParams({ origen: 'paquetes', paquete: slugify(item.nombre) });
+                return `
+                    <article class="package-card">
+                        <div class="card-tag">${item.estado}</div>
+                        <h3>${item.nombre}</h3>
+                        <p>${item.descripcion || 'Paquete disponible para complementar tu reserva.'}</p>
+                        <div class="price-line">
+                            <span>Disponible para agregar</span>
+                            <strong>${formatMoney(item.precio)}</strong>
+                        </div>
+                        <a class="button secondary" href="${reserveLink(params)}">Agregar al detalle</a>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function renderServices(items) {
+            if (!items.length) {
+                servicesGrid.innerHTML = '<div class="loading-card">No hay servicios disponibles por ahora.</div>';
+                return;
+            }
+
+            servicesGrid.innerHTML = items.map((item) => {
+                const params = new URLSearchParams({ origen: 'servicios', servicio: slugify(item.nombre) });
+                return `
+                    <article class="service-card">
+                        <div class="card-tag">${String(item.estado).replace('_', ' ')}</div>
+                        <h3>${item.nombre}</h3>
+                        <p>${item.descripcion || 'Servicio adicional para tu estancia.'}</p>
+                        <div class="price-line">
+                            <span>Agregable a la reserva</span>
+                            <strong>${formatMoney(item.precio)}</strong>
+                        </div>
+                        <a class="button secondary" href="${reserveLink(params)}">Agregar al detalle</a>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function loadLandingData() {
+            let roomsResponse;
+            let packagesResponse;
+            let servicesResponse;
+
+            try {
+                [roomsResponse, packagesResponse, servicesResponse] = await Promise.all([
+                    fetch(apiUrl('habitaciones')),
+                    fetch(apiUrl('paquetes')),
+                    fetch(apiUrl('servicios'))
+                ]);
+            } catch (error) {
+                roomsGrid.innerHTML = `<div class="loading-card">${getConnectionErrorMessage('la API del hospedaje')}</div>`;
+                packagesGrid.innerHTML = `<div class="loading-card">${getConnectionErrorMessage('la API del hospedaje')}</div>`;
+                servicesGrid.innerHTML = `<div class="loading-card">${getConnectionErrorMessage('la API del hospedaje')}</div>`;
+                return;
+            }
+
+            const roomsData = await roomsResponse.json().catch(() => ({}));
+            const packagesData = await packagesResponse.json().catch(() => ({}));
+            const servicesData = await servicesResponse.json().catch(() => ({}));
+
+            const availableRooms = Array.isArray(roomsData.data)
+                ? roomsData.data
+                    .filter((item) => String(item.estado || '').toLowerCase() === 'disponible')
+                    .slice(0, 3)
+                : [];
+            const availablePackages = Array.isArray(packagesData.data)
+                ? packagesData.data.slice(0, 6)
+                : [];
+            const availableServices = Array.isArray(servicesData.data)
+                ? servicesData.data.slice(0, 8)
+                : [];
+
+            renderRooms(availableRooms);
+            renderPackages(availablePackages);
+            renderServices(availableServices);
+        }
+
+        setClientView();
+        loadLandingData();
+    </script>
+</body>
+</html>

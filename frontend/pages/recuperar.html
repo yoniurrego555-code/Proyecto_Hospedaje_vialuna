@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Via Luna | Recuperar cuenta</title>
+    <link rel="stylesheet" href="../css/public-theme.css">
+</head>
+<body>
+    <main class="auth-shell">
+        <section class="split-card">
+            <aside class="side-panel">
+                <div>
+                    <div class="badge">Recuperacion</div>
+                    <h1>Recupera tu acceso sin salir del mismo diseño</h1>
+                    <p>
+                        Esta pantalla completa el flujo publico que faltaba. Si no recuerdas tu contrasena,
+                        aqui puedes dejar registrada tu solicitud.
+                    </p>
+                </div>
+
+                <ul>
+                    <li>Mantiene la misma estetica de landing, login y registro.</li>
+                    <li>Sirve como punto de apoyo mientras se integra un backend de recuperacion.</li>
+                    <li>Desde aqui puedes volver a login o continuar hacia la reserva.</li>
+                </ul>
+
+                <div class="side-actions">
+                    <a class="button light" href="login.html">Volver a login</a>
+                    <a class="button ghost" href="reservar.html">Ir a reservar</a>
+                </div>
+            </aside>
+
+            <section class="form-panel">
+                <h2>Recuperar cuenta</h2>
+                <p>Deja tu correo y una breve nota para registrar la solicitud.</p>
+
+                <div class="form-card">
+                    <form id="recoverForm">
+                        <div class="field">
+                            <label for="email">Correo electronico</label>
+                            <input id="email" name="email" type="email" placeholder="tucorreo@ejemplo.com" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="detalle">Detalle de apoyo</label>
+                            <textarea id="detalle" name="detalle" placeholder="Ej. no recuerdo mi contrasena o perdi acceso al correo principal"></textarea>
+                        </div>
+
+                        <p class="helper">Nota: hoy no existe un endpoint de recuperacion en el backend, asi que registraremos tu solicitud de forma local para no romper el flujo.</p>
+
+                        <button class="button primary" id="submitButton" type="submit">Registrar solicitud</button>
+                    </form>
+
+                    <div id="message" class="message"></div>
+
+                    <div class="support-links">
+                        <a href="login.html">Iniciar sesion</a>
+                        <a href="registro.html">Crear cuenta</a>
+                        <a href="eliminar-cuenta.html">Eliminar cuenta</a>
+                        <a href="index.html">Volver al inicio</a>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const form = document.getElementById('recoverForm');
+        const message = document.getElementById('message');
+        const submitButton = document.getElementById('submitButton');
+
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = `message show ${type}`;
+        }
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            submitButton.disabled = true;
+            submitButton.textContent = 'Registrando...';
+
+            const payload = {
+                email: form.email.value.trim(),
+                detalle: form.detalle.value.trim(),
+                fecha: new Date().toISOString()
+            };
+
+            const historial = JSON.parse(localStorage.getItem('viaLunaRecoveryRequests') || '[]');
+            historial.push(payload);
+            localStorage.setItem('viaLunaRecoveryRequests', JSON.stringify(historial));
+
+            showMessage('Solicitud registrada en este navegador. Mientras se integra el backend, puedes usar este registro como respaldo y volver a iniciar sesion despues.', 'success');
+            form.reset();
+            submitButton.disabled = false;
+            submitButton.textContent = 'Registrar solicitud';
+        });
+    </script>
+</body>
+</html>
