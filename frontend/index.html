@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViaLuna</title>
+  <link rel="stylesheet" href="./styles/dashboard-visily.css">
+</head>
+<body>
+  <main class="auth-layout">
+    <section class="auth-card">
+      <div class="auth-card__header">
+        <span class="badge">ViaLuna</span>
+        <h2>Preparando acceso</h2>
+        <p>Redirigiendo al panel correspondiente según tu rol.</p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { getSession } from "./dashboard/core/api.js";
+    import { LOGIN_URL } from "./dashboard/core/authGuard.js";
+
+    /**
+     * Redirección segura por rol
+     */
+    function redirectByRole(session) {
+      const role = session?.tipoAcceso;
+
+      // 🔐 ADMIN
+      if (role === "admin") {
+        window.location.replace("./pages/admin/dashboard.html");
+        return;
+      }
+
+      // 👤 CLIENTE
+      if (role === "cliente") {
+        window.location.replace("./pages/cliente/dashboard.html");
+        return;
+      }
+
+      // 🚫 Sin sesión válida
+      window.location.replace(LOGIN_URL);
+    }
+
+    /**
+     * Inicio seguro
+     */
+    function initRedirect() {
+      const session = getSession();
+
+      if (!session) {
+        window.location.replace(LOGIN_URL);
+        return;
+      }
+
+      redirectByRole(session);
+    }
+
+    initRedirect();
+  </script>
+</body>
+</html>

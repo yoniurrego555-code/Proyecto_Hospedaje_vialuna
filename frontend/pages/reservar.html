@@ -252,6 +252,12 @@
                 .slice(0, 3);
         }
 
+        function getVisibleItems(items, limit = 50) {
+            return items
+                .filter((item) => String(item.estado || '').toLowerCase() === 'disponible')
+                .slice(0, limit);
+        }
+
         function selectedPackages() {
             return Array.from(document.querySelectorAll('input[name="paquete"]:checked'))
                 .map((checkbox) => state.paquetes.find((item) => String(item.id) === checkbox.value))
@@ -471,10 +477,10 @@
                 ? getVisibleRooms(roomsData.data)
                 : [];
             state.paquetes = Array.isArray(packagesData.data)
-                ? packagesData.data.filter((item) => item.estado !== 'inactivo')
+                ? getVisibleItems(packagesData.data)
                 : [];
             state.servicios = Array.isArray(servicesData.data)
-                ? servicesData.data.filter((item) => item.estado !== 'inactivo')
+                ? getVisibleItems(servicesData.data)
                 : [];
 
             habitacionSelect.innerHTML = state.habitaciones.length
@@ -486,7 +492,7 @@
             packagesList.innerHTML = state.paquetes.length
                 ? state.paquetes.map((item) => `
                     <label class="checkbox-item">
-                        <input type="checkbox" name="paquete" value="${item.id}" ${item.estado !== 'disponible' ? 'disabled data-blocked="true"' : ''}>
+                        <input type="checkbox" name="paquete" value="${item.id}">
                         <span>
                             <strong>${item.nombre}</strong>
                             <span class="tiny">${item.descripcion || 'Paquete disponible'} | ${formatMoney(item.precio)} | ${item.estado}</span>
@@ -498,7 +504,7 @@
             servicesList.innerHTML = state.servicios.length
                 ? state.servicios.map((item) => `
                     <label class="checkbox-item">
-                        <input type="checkbox" name="servicio" value="${item.id}" ${item.estado !== 'disponible' ? 'disabled data-blocked="true"' : ''}>
+                        <input type="checkbox" name="servicio" value="${item.id}">
                         <span>
                             <strong>${item.nombre}</strong>
                             <span class="tiny">${item.descripcion || 'Servicio adicional'} | ${formatMoney(item.precio)} | ${String(item.estado).replace('_', ' ')}</span>
@@ -528,6 +534,8 @@
                     habitacionSelect.value = String(room.id);
                     habitacionSelect.disabled = true;
                     introText.textContent = 'Estas viendo solo la habitacion seleccionada. Puedes revisar su detalle sin iniciar sesion y continuar con ella cuando decidas reservar.';
+                } else {
+                    introText.textContent = 'La habitacion que intentaste abrir ya no esta disponible. Te mostramos solo las opciones disponibles para reservar.';
                 }
             }
 

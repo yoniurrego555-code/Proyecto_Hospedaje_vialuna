@@ -7,25 +7,31 @@
     <link rel="stylesheet" href="../css/admin-theme.css">
 </head>
 <body>
+    <div class="mobile-topbar">
+        <button class="secondary menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="backendSidebar">
+            <span></span><span></span><span></span>
+        </button>
+        <strong>Paquetes</strong>
+    </div>
     <div class="layout">
-        <aside class="sidebar">
+        <aside class="sidebar" id="backendSidebar">
             <div class="brand">
                 <h1>Via Luna</h1>
                 <p>Organiza los paquetes comerciales del hospedaje con el mismo estilo que el resto de modulos.</p>
             </div>
 
             <nav class="admin-nav" aria-label="Modulos del sistema">
-                <a class="admin-link" href="habitaciones.html">Habitaciones</a>
-                <a class="admin-link active" href="paquetes.html">Paquetes</a>
-                <a class="admin-link" href="servicios.html">Servicios</a>
-                <a class="admin-link" href="usuarios.html">Usuarios</a>
-                <a class="admin-link" href="reservas.html">Reservas</a>
+                <a class="admin-link icon-room" href="habitaciones.html">Habitaciones</a>
+                <a class="admin-link icon-package active" href="paquetes.html">Paquetes</a>
+                <a class="admin-link icon-service" href="servicios.html">Servicios</a>
+                <a class="admin-link icon-user" href="usuarios.html">Usuarios</a>
+                <a class="admin-link icon-reservation" href="reservas.html">Reservas</a>
             </nav>
 
             <div class="sidebar-actions">
-                <button class="primary" id="btnNuevoPaquete" type="button">Nuevo paquete</button>
-                <button class="secondary" id="btnRecargar" type="button">Recargar listado</button>
-                <button class="ghost" id="btnLimpiarBusqueda" type="button">Limpiar busqueda</button>
+                <button class="primary icon-new" id="btnNuevoPaquete" type="button">Nuevo paquete</button>
+                <button class="secondary icon-reload" id="btnRecargar" type="button">Recargar listado</button>
+                <button class="ghost icon-clear" id="btnLimpiarBusqueda" type="button">Limpiar busqueda</button>
             </div>
 
             <div class="sidebar-stats">
@@ -47,10 +53,10 @@
                 <h3>Acceso rapido</h3>
                 <p>La caja flotante de autenticacion se repite aqui para mantener coherencia entre todos los modulos.</p>
                 <div class="auth-links">
-                    <a class="secondary" href="registro.html">Crear cuenta</a>
-                    <a class="primary" href="login.html">Iniciar sesion</a>
-                    <a class="ghost" href="recuperar.html">Recuperar cuenta</a>
-                    <a class="ghost" href="eliminar-cuenta.html">Eliminar cuenta</a>
+                    <a class="secondary icon-register" href="registro.html">Crear cuenta</a>
+                    <a class="primary icon-login" href="login.html">Iniciar sesion</a>
+                    <a class="ghost icon-recover" href="recuperar.html">Recuperar cuenta</a>
+                    <a class="ghost icon-delete-account" href="eliminar-cuenta.html">Eliminar cuenta</a>
                 </div>
             </div>
         </aside>
@@ -122,6 +128,7 @@
         </main>
     </div>
 
+    <script src="../js/shared/admin-layout.js"></script>
     <script type="module" src="../js/paquetes.js"></script>
 </body>
 </html>

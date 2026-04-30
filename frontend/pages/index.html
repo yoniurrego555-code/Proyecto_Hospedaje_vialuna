@@ -48,17 +48,20 @@
                     </div>
 
                     <div class="stats-grid">
-                        <div class="summary-card">
+                        <div class="summary-card visual-stat">
+                            <div class="stat-media stat-media-stay"></div>
                             <span>Reserva</span>
                             <strong>1 flujo</strong>
                             <p>Login, seleccion, detalle y confirmacion en una sola experiencia.</p>
                         </div>
-                        <div class="summary-card">
+                        <div class="summary-card visual-stat">
+                            <div class="stat-media stat-media-catalog"></div>
                             <span>Catalogo</span>
                             <strong>Real</strong>
                             <p>La landing carga datos actuales de habitaciones, paquetes y servicios.</p>
                         </div>
-                        <div class="summary-card">
+                        <div class="summary-card visual-stat">
+                            <div class="stat-media stat-media-secure"></div>
                             <span>Control</span>
                             <strong>Seguro</strong>
                             <p>La reserva se confirma solo despues de iniciar sesion.</p>
@@ -124,14 +127,17 @@
 
                 <div class="link-grid">
                     <a href="reservar.html">
+                        <span class="link-thumb link-thumb-reserva"></span>
                         <strong>Explorar reserva</strong>
                         <small>Revisa habitaciones, paquetes y servicios antes de confirmar.</small>
                     </a>
                     <a href="registro.html?redirect=reservar.html">
+                        <span class="link-thumb link-thumb-cuenta"></span>
                         <strong>Crear cuenta</strong>
                         <small>Registrate y entra al flujo de reserva.</small>
                     </a>
                     <a href="recuperar.html">
+                        <span class="link-thumb link-thumb-ayuda"></span>
                         <strong>Recuperar cuenta</strong>
                         <small>Solicita apoyo si no recuerdas tu acceso.</small>
                     </a>
@@ -158,11 +164,9 @@
         const storedUser = JSON.parse(localStorage.getItem('usuario') || 'null');
         const token = localStorage.getItem('token');
 
-        const roomBackgrounds = [
-            'linear-gradient(145deg, #d4eadf 0%, #8ab8a2 48%, #356b59 100%)',
-            'linear-gradient(145deg, #edf8f1 0%, #a4cbb8 44%, #487867 100%)',
-            'linear-gradient(145deg, #bdd9ca 0%, #78a88f 44%, #244f43 100%)'
-        ];
+        const fallbackRoomImage = 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80';
+        const fallbackPackageImage = 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80';
+        const fallbackServiceImage = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80';
 
         function formatMoney(value) {
             return new Intl.NumberFormat('es-CO', {
@@ -183,6 +187,79 @@
 
         function reserveLink(params) {
             return `reservar.html?${params.toString()}`;
+        }
+
+        function imageElement(src, fallback, alt) {
+            return `<img src="${src}" alt="${alt}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'">`;
+        }
+
+        function normalizeText(text) {
+            return String(text || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function imageForRoom(item) {
+            const text = normalizeText(`${item.nombre} ${item.descripcion}`);
+
+            if (text.includes('familiar')) {
+                return 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            if (text.includes('suite') || text.includes('premium')) {
+                return 'https://images.unsplash.com/photo-1505693538694-c67614c0a0a3?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            return 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80';
+        }
+
+        function imageForPackage(item) {
+            const text = normalizeText(`${item.nombre} ${item.descripcion}`);
+
+            if (text.includes('romant')) {
+                return 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            if (text.includes('spa') || text.includes('bienestar')) {
+                return 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            if (text.includes('avent') || text.includes('recorrido')) {
+                return 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            return fallbackPackageImage;
+        }
+
+        function imageForService(item) {
+            const text = normalizeText(`${item.nombre} ${item.descripcion}`);
+
+            if (text.includes('desayuno') || text.includes('buffet') || text.includes('boffet') || text.includes('comida')) {
+                return 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            if (text.includes('spa') || text.includes('masaje') || text.includes('relaj')) {
+                return 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            if (text.includes('cabalg') || text.includes('caballo')) {
+                return 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            if (text.includes('recorrido') || text.includes('caminata') || text.includes('sender')) {
+                return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80';
+            }
+
+            return fallbackServiceImage;
+        }
+
+        function onlyAvailable(items, limit) {
+            return Array.isArray(items)
+                ? items
+                    .filter((item) => String(item.estado || '').toLowerCase() === 'disponible')
+                    .slice(0, limit)
+                : [];
         }
 
         function setClientView() {
@@ -224,7 +301,9 @@
                 const params = new URLSearchParams({ origen: 'habitaciones', habitacion: slugify(item.nombre) });
                 return `
                     <article class="room-card">
-                        <div class="card-media" style="background:${roomBackgrounds[index % roomBackgrounds.length]};"></div>
+                        <div class="card-media">
+                            ${imageElement(imageForRoom(item) || fallbackRoomImage, '../assets/room-cabin.svg', `Imagen de la habitacion ${item.nombre}`)}
+                        </div>
                         <div class="card-tag">${item.estado}</div>
                         <h3>${item.nombre}</h3>
                         <p>${item.descripcion || 'Habitacion disponible para reservar.'}</p>
@@ -248,6 +327,9 @@
                 const params = new URLSearchParams({ origen: 'paquetes', paquete: slugify(item.nombre) });
                 return `
                     <article class="package-card">
+                        <div class="card-media">
+                            ${imageElement(imageForPackage(item) || fallbackPackageImage, '../assets/package-spa.svg', `Imagen del paquete ${item.nombre}`)}
+                        </div>
                         <div class="card-tag">${item.estado}</div>
                         <h3>${item.nombre}</h3>
                         <p>${item.descripcion || 'Paquete disponible para complementar tu reserva.'}</p>
@@ -271,6 +353,9 @@
                 const params = new URLSearchParams({ origen: 'servicios', servicio: slugify(item.nombre) });
                 return `
                     <article class="service-card">
+                        <div class="card-media">
+                            ${imageElement(imageForService(item) || fallbackServiceImage, '../assets/service-adventure.svg', `Imagen del servicio ${item.nombre}`)}
+                        </div>
                         <div class="card-tag">${String(item.estado).replace('_', ' ')}</div>
                         <h3>${item.nombre}</h3>
                         <p>${item.descripcion || 'Servicio adicional para tu estancia.'}</p>
@@ -306,17 +391,9 @@
             const packagesData = await packagesResponse.json().catch(() => ({}));
             const servicesData = await servicesResponse.json().catch(() => ({}));
 
-            const availableRooms = Array.isArray(roomsData.data)
-                ? roomsData.data
-                    .filter((item) => String(item.estado || '').toLowerCase() === 'disponible')
-                    .slice(0, 3)
-                : [];
-            const availablePackages = Array.isArray(packagesData.data)
-                ? packagesData.data.slice(0, 6)
-                : [];
-            const availableServices = Array.isArray(servicesData.data)
-                ? servicesData.data.slice(0, 8)
-                : [];
+            const availableRooms = onlyAvailable(roomsData.data, 3);
+            const availablePackages = onlyAvailable(packagesData.data, 6);
+            const availableServices = onlyAvailable(servicesData.data, 8);
 
             renderRooms(availableRooms);
             renderPackages(availablePackages);
