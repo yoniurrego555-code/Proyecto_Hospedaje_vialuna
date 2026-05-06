@@ -47,10 +47,6 @@ class PagosModule {
     ).length;
     
     // Simular pagos del mes (esto debería venir de una API real de pagos)
-    const fechaActual = new Date();
-    const mesActual = fechaActual.getMonth();
-    const añoActual = fechaActual.getFullYear();
-    
     // Para demostración, simulamos algunos pagos
     const esteMes = Math.floor(Math.random() * 20) + 5;
 
